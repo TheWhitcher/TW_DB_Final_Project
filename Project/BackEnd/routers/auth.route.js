@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { application } = require('express');
 const express = require('express');
 const { restart } = require('nodemon');
@@ -6,7 +7,7 @@ const { client } = require('../database/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const database = client.db("protected");
+const database = client.db("emission_users");
 const usercollection = database.collection("users");
 
 // Routes here

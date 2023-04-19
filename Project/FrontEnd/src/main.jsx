@@ -1,14 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import './index.css'
 import App from './App'
 import Login from './Login'
-import './index.css'
+import Register from './Register'
+import Home from './Home'
+import Graph from './Graph'
 // Import bootstrap
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Register from './Register'
-import Home from './Home'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/Login" element={<Login/>}/>
       <Route path="/Register" element={<Register/>}/>
       <Route path='/Home' element={<Home/>}/>
+      <Route path='/Graph' element={<Graph/>}/>
     </Routes>
   </BrowserRouter>
 )

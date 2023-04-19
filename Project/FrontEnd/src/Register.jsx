@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Route } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,19 +9,18 @@ function Register() {
     const [form, setform] = useState({});
     const navigate = useNavigate(); 
 
-    const saveRoute = () =>{ 
-         
-  }
+    const saveRoute = () =>{     
+    }
 
-  function handleInputChange(key, newValue){
-    form[key] = newValue; // ex: form["username"] = "toto";
-    setform(form);
-}
+    function handleInputChange(key, newValue){
+        form[key] = newValue; // ex: form["username"] = "toto";
+        setform(form);
+        }
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-const toastOptions = {
+    const toastOptions = {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,
@@ -85,13 +83,13 @@ const toastOptions = {
         const numbersTest = numbersRegex.test(password)
         console.log('numbersTest: ', numbersTest);
         
-        const specialRegex = /[!#$%&'*+\/=?^_`{|}~-]/;
+        const specialRegex = /[!#$%&'*+\/=?^_`.{|}~-]/;
         const specialTest = specialRegex.test(password);
         console.log('specialTest: ', specialTest);
 
         return lengthTest && upperTest && lowerTest && numbersTest && specialTest;
     }
-}
+    }
 
   return (
       <div className="App">
@@ -99,10 +97,10 @@ const toastOptions = {
         <form onSubmit={handleSubmit}>
             <div>
                 <label htmlFor="email" className="form-label">Email address</label>
-                    <input className="form-control" type="email" placeholder="Ex: blah@hotmail.com" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('email', event.target.value)}/>
+                    <input className="form-control" type="email" placeholder="Ex: example@example.com" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('email', event.target.value)}/>
 
                 <label htmlFor="username" className="form-label">Username </label>
-                    <input className="form-control" type="text" placeholder="Ex:JohnnySins69" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('username', event.target.value)}/>
+                    <input className="form-control" type="text" placeholder="Ex: Example123" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('username', event.target.value)}/>
 
                 <label htmlFor="inputPassword" className="form-label">Password</label>
                 <div className="col">
