@@ -99,9 +99,6 @@ function Register() {
                 <label htmlFor="email" className="form-label">Email address</label>
                     <input className="form-control" type="email" placeholder="Ex: example@example.com" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('email', event.target.value)}/>
 
-                <label htmlFor="username" className="form-label">Username </label>
-                    <input className="form-control" type="text" placeholder="Ex: Example123" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('username', event.target.value)}/>
-
                 <label htmlFor="inputPassword" className="form-label">Password</label>
                 <div className="col">
                     <input type="password" className="form-control" id="inputPassword" required onChange={(event) => handleInputChange('password', event.target.value)}/>
@@ -115,10 +112,23 @@ function Register() {
                 <label htmlFor="DOB" className="form-label">Date of Birth</label>
                     <input type="date" aria-label="DOB" className="form-control" required onChange={(event) => handleInputChange('dateOfBirth', event.target.value)}/>
 
-                <label className="form-check-label" htmlFor="firstCheckbox">I accept the terms and conditions </label>
-                <input className="form-check-input ms-2" type="checkbox" value="false" id="termsCheckbox" required onChange={(event) => handleInputChange('terms', event.target.checked)}/>
+                    <div className="dropdown m-2">
+                        <label htmlFor="FOW" className="form-label me-2">Field of Work</label>
+                        <button type="button" className="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                            Field of Work
+                        </button>
+                        <ul className="dropdown-menu">
+                            <li><a className="dropdown-item" href="#">Education</a></li>
+                            <li><a className="dropdown-item" href="#">Information</a></li>
+                            <li><a className="dropdown-item" href="#">Health and Social Services</a></li>
+                            <li><a className="dropdown-item" href="#">Manufacturing</a></li>
+                        </ul>
+                    </div>
+
+                {/* <label className="form-check-label" htmlFor="firstCheckbox">I accept the terms and conditions </label>
+                <input className="form-check-input ms-2" type="checkbox" value="false" id="termsCheckbox" required onChange={(event) => handleInputChange('terms', event.target.checked)}/> */}
                 <div/>
-                <button className='btn btn-success' type="submit">Save</button>
+                <button className='btn btn-success' type="submit">Create</button>
                 <div>Login? <a href='/Login'>Click here</a></div>
             </div>
         </form>

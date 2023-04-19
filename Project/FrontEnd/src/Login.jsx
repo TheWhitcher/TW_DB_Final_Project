@@ -61,10 +61,10 @@ function Login() {
         <h1>Log In</h1>
         <form onSubmit={handleSubmit}>
             <div>
-                <label className="form-label" htmlFor="username">Username </label>
-                    <input className="form-control" type="text" placeholder="Username" id="username" onChange={(event) => handleInputChange('username', event.target.value)}/>
+                <label className="form-label" htmlFor="username">Email</label>
+                    <input className="form-control" type="email" placeholder="Email" id="email" onChange={(event) => handleInputChange('email', event.target.value)}/>
 
-                <label className="form-label" htmlFor="Password">Password </label>
+                <label className="form-label" htmlFor="Password">Password</label>
                     <input className="form-control my-2" type="password" placeholder="Password" id="password" onChange={(event) => handleInputChange('password', event.target.value)}/>
                 <button className='btn btn-success' type="submit" >Login</button>
             </div>
