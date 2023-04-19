@@ -30,15 +30,23 @@ function Graph() {
       }
 
   },[])
+
   const logoutRoute = () =>{ 
-      navigate("../"); 
+    localStorage.removeItem("token");
+    navigate("../"); 
+  }
+
+  const homeRoute = () =>{
+    navigate("../Home");
   }
 
   return (
       <div className="App">
-          <h1>Welcome {username}</h1>
-          <p>Here are graphs! {isAdmin? "You are an admin BTW.": ""}</p>
-          <button className='btn btn-success' onClick={logoutRoute}>Logout</button>
+        <h1>Here are the "VERY" important graphs</h1>
+        <div>
+            <button className='btn btn-success mx-1' onClick={homeRoute}>Home</button>
+            <button className='btn btn-success mx-1' onClick={logoutRoute}>Logout</button>
+        </div>
       </div>
   )
 }
