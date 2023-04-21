@@ -10,7 +10,7 @@ function Register() {
     const navigate = useNavigate(); 
 
     function handleInputChange(key, newValue){
-        form[key] = newValue; // ex: form["username"] = "toto";
+        form[key] = newValue;
         setform(form);
         }
 
@@ -34,7 +34,7 @@ function Register() {
     }
 
     if(!validatePassword(form.password)){
-        toast.error("Passwords don't match criteria", toastOptions)
+        toast.error("Password does not match criteria", toastOptions)
         return
     }
 
@@ -43,7 +43,6 @@ function Register() {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
-            // 'authorization': localStorage.getItem('token') // to authenticate a protected route
         },
         body: JSON.stringify(form)
     }
@@ -51,13 +50,9 @@ function Register() {
 
     const response = await fetch(loginUrl, options)  
     
-    if(response.status == 201){
-        // const data = await response.json()
-        // const token = data.accessToken;
-        // localStorage.setItem('token', token);
-        
+    if(response.status == 201){        
         toast.success("Register successful", toastOptions);
-        // setTimeout(() => {navigate('/home')}, 2000)
+        setTimeout(() => {navigate('/login')}, 2000)
     }
     else{
         toast.error("Register failed", toastOptions);

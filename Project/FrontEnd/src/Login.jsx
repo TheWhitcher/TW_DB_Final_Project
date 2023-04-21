@@ -13,7 +13,7 @@ function Login() {
     }
     
     function handleInputChange(key, newValue){
-        form[key] = newValue; // ex: form["username"] = "toto";
+        form[key] = newValue;
         setform(form);
     }
 
@@ -25,7 +25,6 @@ function Login() {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
-                // 'authorization': localStorage.getItem('token') // to authenticate a protected route
             },
             body: JSON.stringify(form)
         }
@@ -61,7 +60,7 @@ function Login() {
         <h1 className="mb-3">Log In</h1>
         <form onSubmit={handleSubmit}>
             <div>
-            <div className="input-group mb-3">
+                <div className="input-group mb-3">
                     <span className="input-group-text" id="email">Email</span>
                     <input type="email" className="form-control" placeholder="example@example.com" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('email', event.target.value)}/>
                 </div>
@@ -70,7 +69,7 @@ function Login() {
                     <span className="input-group-text" id="password">Password</span>
                     <input type="password" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('password', event.target.value)}/>
                 </div>
-                <button className='btn btn-success mb-3' type="submit" >Login</button>
+                <button className='btn btn-success mb-3' type="submit">Login</button>
             </div>
         </form>
 
