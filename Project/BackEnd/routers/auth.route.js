@@ -36,6 +36,8 @@ router.post('/register', async function(req,res){
     const result = await usercollection.insertOne({
         email: body.email,
         password: passwordHash,
+        dateOfBirth: body.dateOfBirth,
+        fieldOfWork: body.fieldOfWork,
         isAdmin: false,
     })
 
