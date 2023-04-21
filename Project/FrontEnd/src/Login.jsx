@@ -58,15 +58,19 @@ function Login() {
 
   return (
     <div className="App">
-        <h1>Log In</h1>
+        <h1 className="mb-3">Log In</h1>
         <form onSubmit={handleSubmit}>
             <div>
-                <label className="form-label" htmlFor="username">Email</label>
-                    <input className="form-control" type="email" placeholder="Email" id="email" onChange={(event) => handleInputChange('email', event.target.value)}/>
+            <div className="input-group mb-3">
+                    <span className="input-group-text" id="email">Email</span>
+                    <input type="email" className="form-control" placeholder="example@example.com" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('email', event.target.value)}/>
+                </div>
 
-                <label className="form-label" htmlFor="Password">Password</label>
-                    <input className="form-control my-2" type="password" placeholder="Password" id="password" onChange={(event) => handleInputChange('password', event.target.value)}/>
-                <button className='btn btn-success' type="submit" >Login</button>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="password">Password</span>
+                    <input type="password" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('password', event.target.value)}/>
+                </div>
+                <button className='btn btn-success mb-3' type="submit" >Login</button>
             </div>
         </form>
 

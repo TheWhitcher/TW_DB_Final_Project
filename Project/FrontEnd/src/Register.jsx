@@ -9,9 +9,6 @@ function Register() {
     const [form, setform] = useState({});
     const navigate = useNavigate(); 
 
-    const saveRoute = () =>{     
-    }
-
     function handleInputChange(key, newValue){
         form[key] = newValue; // ex: form["username"] = "toto";
         setform(form);
@@ -96,39 +93,40 @@ function Register() {
         <h1>Create an Account</h1>
         <form onSubmit={handleSubmit}>
             <div>
-                <label htmlFor="email" className="form-label">Email address</label>
-                    <input className="form-control" type="email" placeholder="Ex: example@example.com" aria-label=".form-control-sm example" required onChange={(event) => handleInputChange('email', event.target.value)}/>
-
-                <label htmlFor="inputPassword" className="form-label">Password</label>
-                <div className="col">
-                    <input type="password" className="form-control" id="inputPassword" required onChange={(event) => handleInputChange('password', event.target.value)}/>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="email">Email</span>
+                    <input type="email" className="form-control" placeholder="example@example.com" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('email', event.target.value)}/>
                 </div>
 
-                <label htmlFor="inputPassword" className="form-label" id="confirmPassword" >Confirm Password</label>
-                    <div className="col">
-                        <input type="password" className="form-control" id="confirmPassword" required onChange={(event) => handleInputChange('confirmPassword', event.target.value)}/>
-                    </div>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="password">Password</span>
+                    <input type="password" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('password', event.target.value)}/>
+                </div>
 
-                <label htmlFor="DOB" className="form-label">Date of Birth</label>
-                    <input type="date" aria-label="DOB" className="form-control" required onChange={(event) => handleInputChange('dateOfBirth', event.target.value)}/>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="confirmPassword">Confirm Password</span>
+                    <input type="password" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('confirmPassword', event.target.value)}/>
+                </div>
 
-                    <div className="dropdown m-2">
-                        <label htmlFor="FOW" className="form-label me-2">Field of Work</label>
-                        <button type="button" className="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                            Field of Work
-                        </button>
-                        <ul className="dropdown-menu">
-                            <li><a className="dropdown-item" href="#">Education</a></li>
-                            <li><a className="dropdown-item" href="#">Information</a></li>
-                            <li><a className="dropdown-item" href="#">Health and Social Services</a></li>
-                            <li><a className="dropdown-item" href="#">Manufacturing</a></li>
-                        </ul>
-                    </div>
+                <div className="input-group mb-3">
+                    <span className="input-group-text" id="DOB">Date Of Birth</span>
+                    <input type="date" className="form-control" aria-label="DOB" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('dateOfBirth', event.target.value)}/>
+                </div>
 
-                {/* <label className="form-check-label" htmlFor="firstCheckbox">I accept the terms and conditions </label>
-                <input className="form-check-input ms-2" type="checkbox" value="false" id="termsCheckbox" required onChange={(event) => handleInputChange('terms', event.target.checked)}/> */}
-                <div/>
-                <button className='btn btn-success' type="submit">Create</button>
+                <div className="input-group my-3">
+                <label className="input-group-text" htmlFor="inputGroupSelect01">Field of Work</label>
+                <select className="form-select" id="inputGroupSelect01" required onChange={(event) => handleInputChange('fieldOfWork', event.target.value)}>
+                    <option value="None">None</option>
+                    <option value="Education">Education</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Health and Social Services">Health and Social Services</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Intergalactic Assasin">Intergalactic Assasin</option>
+                    <option value="Pokémon Trainer">Pokémon Trainer</option>
+                </select>
+                </div>
+                
+                <button className='btn btn-success mb-2' type="submit">Create</button>
                 <div>Login? <a href='/Login'>Click here</a></div>
             </div>
         </form>

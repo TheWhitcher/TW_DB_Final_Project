@@ -42,7 +42,8 @@ function Graph() {
 
   return (
       <div className="App">
-        <h1>Here are the "VERY" important graphs</h1>
+        <h1>Annual Emissions per Country</h1>
+         <img src="\src\assets\Emissions_Country_Year.png" alt="Emissions Graph" style={{ width: '500px', }}/>
         <div>
             <button className='btn btn-success mx-1' onClick={homeRoute}>Home</button>
             <button className='btn btn-success mx-1' onClick={logoutRoute}>Logout</button>
