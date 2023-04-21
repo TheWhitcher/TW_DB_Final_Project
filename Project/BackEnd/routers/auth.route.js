@@ -14,18 +14,18 @@ const usercollection = database.collection("users");
 router.post('/register', async function(req,res){
     const body = req.body;
 
-    if(!body.username || !body.password){
+    if(!body.email || !body.password){
         res.status(400).send({
-            message: "Missing username or password"
+            message: "Missing email or password"
         })
         return;
     }
 
-    const user = await usercollection.findOne({username: body.username});
+    const user = await usercollection.findOne({email: body.email});
 
     if(user){
         res.status(409).send({
-            message: "Username already taken"
+            message: "Email already taken"
         })
         return;
     }
@@ -34,8 +34,10 @@ router.post('/register', async function(req,res){
     const passwordHash = await bcrypt.hash(body.password, salt);
 
     const result = await usercollection.insertOne({
-        username: body.username,
+        email: body.email,
         password: passwordHash,
+        dateOfBirth: body.dateOfBirth,
+        fieldOfWork: body.fieldOfWork,
         isAdmin: false,
     })
 
@@ -47,14 +49,14 @@ router.post('/register', async function(req,res){
 router.post('/login', async function(req,res){
     const body = req.body;
 
-    if(!body.username || !body.password){
+    if(!body.email || !body.password){
         res.status(400).send({
             message: "Missing username or password"
         })
         return;
     }
 
-    const user = await usercollection.findOne({username: body.username});
+    const user = await usercollection.findOne({email: body.email});
 
     if(!user){
         res.status(401).send({
@@ -69,7 +71,7 @@ router.post('/login', async function(req,res){
     if(verify){
 
         const payload = {
-            username: user.username,
+            email: user.email,
             isAdmin: user.isAdmin,
         }
         const token = jwt.sign(payload, process.env.SECRET, {expiresIn: '1d'});

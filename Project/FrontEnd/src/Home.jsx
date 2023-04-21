@@ -31,14 +31,22 @@ function Home() {
 
     },[])
     const logoutRoute = () =>{ 
+        localStorage.removeItem("token");
         navigate("../"); 
     }
+
+    const graphRoute = () =>{
+        navigate("../Graph");
+      }
 
     return (
         <div className="App">
             <h1>Welcome {username}</h1>
             <p>You are logged in! {isAdmin? "You are an admin BTW.": ""}</p>
-            <button className='btn btn-success' onClick={logoutRoute}>Logout</button>
+            <div>
+                <button className='btn btn-success mx-1' onClick={graphRoute}>Graphs</button>
+                <button className='btn btn-success mx-1' onClick={logoutRoute}>Logout</button>
+            </div>
         </div>
     )
 }
