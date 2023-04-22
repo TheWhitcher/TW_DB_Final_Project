@@ -5,7 +5,7 @@ import './App.css'
 
 function Home() {
   
-    const [username, setUsername] = useState(null);
+    const [email, setUsername] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate(); 
 
@@ -21,7 +21,7 @@ function Home() {
         try{
             const decodedToken = jwt_decode(token);
 
-            setUsername(decodedToken.username)
+            setUsername(decodedToken.email)
             setIsAdmin(decodedToken.isAdmin)
         } catch(err){
             console.error(err);
@@ -41,7 +41,7 @@ function Home() {
 
     return (
         <div className="App">
-            <h1>Welcome {username}</h1>
+            <h1>Welcome {email}</h1>
             <p>You are logged in! {isAdmin? "You are an admin BTW.": ""}</p>
             <div>
                 <button className='btn btn-success mx-1' onClick={graphRoute}>Graphs</button>
