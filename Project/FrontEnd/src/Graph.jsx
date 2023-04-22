@@ -55,6 +55,20 @@ function Graph() {
       }
     }
 
+    // Enable/Disable Relative to world checkbox
+    if (key === "count"){
+       const checkbox = document.getElementById("relativeCheckbox")
+        
+      if(newValue === "PerCountry"){
+        checkbox.disabled = false;
+      }
+      else{
+        checkbox.checked = false;
+        checkbox.disabled = true;
+      }
+
+    }
+
     setform(form);
     }
 
@@ -99,7 +113,7 @@ function Graph() {
             </div>
 
             <div className="col-3 px-0 pt-4">
-              <input className="form-check-input me-3" type="checkbox" value="" id="worldTotalCheckBox" onChange={(event) => handleInputChange('r2worldTotal', event.target.checked)}/>
+              <input className="form-check-input me-3" type="checkbox" value="" id="relativeCheckbox" onChange={(event) => handleInputChange('r2worldTotal', event.target.checked)}/>
               <label className="form-check-label fs-6" htmlFor="worldTotal">Relative to world total</label>
             </div>
           </div>
@@ -113,83 +127,83 @@ function Graph() {
 
               <ul className="list-group list-group-flush text-start navbar-nav-scroll" id="CountryList">
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Argentina" id="ARcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Argentina" id="ARGcheckbox" onChange={(event) => handleInputChange('ARGcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxOne">Argentina</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Australia" id="AUcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Australia" id="AUScheckbox" onChange={(event) => handleInputChange('AUScheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxTwo">Australia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Brazil" id="BRcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Brazil" id="BRAcheckbox" onChange={(event) => handleInputChange('BRAcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxThree">Brazil</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Canada" id="CAcheckbox"/>
-                  <label className="form-check-label" htmlFor="checkBoxFour">Canada</label>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="Canada" id="CANcheckbox" onChange={(event) => handleInputChange('CANcheckBox', event.target.checked)}/>
+                  <label className="form-check-label" htmlFor="checkBoxFour" >Canada</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="China" id="CHcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="China" id="CHNcheckbox" onChange={(event) => handleInputChange('CHNcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFive">China</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Canada" id="CAcheckbox"/>
-                  <label className="form-check-label" htmlFor="checkBoxSix">Canada</label>
+                  <input className="form-check-input me-3" type="checkbox" value="European Union" id="EUUcheckbox" onChange={(event) => handleInputChange('EUUcheckBox', event.target.checked)}/>
+                  <label className="form-check-label" htmlFor="checkBoxSix">European Union</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="France" id="FRcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="France" id="FRAcheckbox" onChange={(event) => handleInputChange('FRAcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSeven">France</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Germany" id="GRcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Germany" id="DEUcheckbox" onChange={(event) => handleInputChange('DEUcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxEight">Germany</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="India" id="IDcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="India" id="INDcheckbox" onChange={(event) => handleInputChange('INDcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxNine">India</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Indonesia" id="INcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Indonesia" id="IDNcheckbox" onChange={(event) => handleInputChange('IDNcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxTen">Indonesia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Italy" id="ITcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Italy" id="ITAcheckbox" onChange={(event) => handleInputChange('ITAcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxEleven">Italy</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Japan" id="JPcheckbox"/>
-                  <label className="form-check-label" htmlFor="checkBoxTwelve">Japan</label>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="Japan" id="JPNcheckbox" onChange={(event) => handleInputChange('JPNcheckBox', event.target.checked)}/>
+                  <label className="form-check-label" htmlFor="checkBoxTwelve" >Japan</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Mexico" id="MXcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Mexico" id="MEXcheckbox" onChange={(event) => handleInputChange('MEXcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxThirteen">Mexico</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Russia" id="RScheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Russia" id="RUScheckbox" onChange={(event) => handleInputChange('RUScheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFourteen">Russia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Saudi Arabia" id="SARcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Saudi Arabia" id="SAUcheckbox" onChange={(event) => handleInputChange('SAUcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFifteen">Saudi Arabia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="South Africa" id="SAFcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="South Africa" id="ZAFcheckbox" onChange={(event) => handleInputChange('ZAFcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSixteen">South Africa</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="South Korea" id="SKcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="South Korea" id="KORcheckbox" onChange={(event) => handleInputChange('KORcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSeventeen">South Korea</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Turkey" id="TKcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" value="Turkey" id="TURcheckbox" onChange={(event) => handleInputChange('TURcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxEighteen">Turkey</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="United Kingdon" id="UNcheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="United Kingdon" id="GBRcheckbox" onChange={(event) => handleInputChange('GBRcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxNineteen">United Kingdom</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="United States" id="UScheckbox"/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="United States" id="USAcheckbox" onChange={(event) => handleInputChange('USAcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSeven">United States</label>
                 </li>
               </ul>
