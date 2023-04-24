@@ -5,42 +5,30 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const { connect } = require('./database/database');
-const authRouter = require('./routers/auth.route');
+const userRouter = require('./routers/user.route');
+const graphRouter = require('./routers/graph.route');
 const { standardAuth, adminAuth } = require('./middlewares/auth.middleware');
 
+// Middlewares
 app.use(cors());
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
 
+// Health Route
 app.get('/', function(req, res) {
-    res.send('Hello World')
+    res.send('Server Healthy')
 })
 
-app.use('/auth', authRouter);
+// Auth Routes
+app.use('/user', userRouter);
 
-// Global auth middleware
-// app.use(standardAuth);
+// Auth Middleware
+app.use(standardAuth);
 
-// Admin route
-app.get('/admin', adminAuth, function(req,res){
-    res.status(200).send({
-        message: "Admin Only"
-    })
-})
-// Route specific secured
-app.get('/secure', standardAuth, function(req,res){
-    res.status(200).send({
-        message: "Route Secured"
-    })
-})
+// Graph Routes
+app.use('/graph', graphRouter);
 
-// Not secure
-app.get('/notsecure', function(req,res){
-    res.status(200).send({
-        message: "Route not Secured"
-    })
-})
-
+// Server Port
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
     connect()

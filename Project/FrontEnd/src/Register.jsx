@@ -38,7 +38,7 @@ function Register() {
         return
     }
 
-    const loginUrl = 'http://localhost:8080/auth/register';
+    const loginUrl = 'http://localhost:8080/user/register';
     const options = {
         method: 'POST',
         headers: {

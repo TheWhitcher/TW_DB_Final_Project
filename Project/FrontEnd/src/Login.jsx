@@ -20,7 +20,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const loginUrl = 'http://localhost:8080/auth/login';
+        const loginUrl = 'http://localhost:8080/user/login';
         const options = {
             method: 'POST',
             headers: {
