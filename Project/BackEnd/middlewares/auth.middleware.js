@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+// Standard Authorization
 async function standardAuth(req,res,next){
     const authorization = req.headers.authorization;
 
@@ -21,6 +22,7 @@ async function standardAuth(req,res,next){
     }
 }
 
+// Admin Authorization
 async function adminAuth(req,res,next){
     const authorization = req.headers.authorization;
 

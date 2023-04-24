@@ -47,6 +47,8 @@ function Home() {
                 <button className='btn btn-success mx-1' onClick={graphRoute}>Graphs</button>
                 <button className='btn btn-success mx-1' onClick={logoutRoute}>Logout</button>
             </div>
+
+            <h3 className="text-start mt-5">Your Saved Graphs</h3>
         </div>
     )
 }

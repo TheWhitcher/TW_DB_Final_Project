@@ -81,6 +81,14 @@ function Graph() {
     navigate("../Home");
   }
 
+  const saveGraph = () => {
+
+  }
+
+  const downloadGraph = () => {
+
+  }
+
   return (
       <div className="App">
         <div className="container">
@@ -125,7 +133,7 @@ function Graph() {
                 <input type="text" className="form-control" placeholder="Search a Country" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(event) => handleInputChange('search', event.target.value)}/>
               </div>
 
-              <ul className="list-group list-group-flush text-start navbar-nav-scroll" id="CountryList">
+              <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
                 <li className="list-group-item px-1">
                   <input className="form-check-input me-3" type="checkbox" value="Argentina" id="ARGcheckbox" onChange={(event) => handleInputChange('ARGcheckBox', event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxOne">Argentina</label>
@@ -217,6 +225,14 @@ function Graph() {
                 
                 <div className="row">
                   <img src="\src\assets\co2_sample.jpg" alt="CO2 Graph" style={{ width: '600px', }}/>
+                </div>
+                <div className="row">
+                  <div className="col-6">
+                    <button className='btn btn-success' onClick={saveGraph}>Save</button>
+                  </div>
+                  <div className="col-6">
+                    <button className='btn btn-success' onClick={downloadGraph}>Download</button>
+                  </div>
                 </div>
               </div>
             </div>
