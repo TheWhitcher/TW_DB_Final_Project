@@ -5,6 +5,7 @@ import seaborn as sns
 
 #Create dataframe
 co2 = 'annual-co2-emissions-per-country.csv'
+print(co2)
 df = pd.read_csv(co2)
 
 #Make the first graph.
@@ -30,5 +31,6 @@ sns.lineplot(
     ax=axs,
 )
 plt.title("Annual CO₂ emissions per Countries")
-plt.show()
-plt.savefig("annual CO₂ emissions per Countries")
+#plt.show()
+plt.savefig("annual_CO2_emissions_per_Countries")
+print("File Saved")

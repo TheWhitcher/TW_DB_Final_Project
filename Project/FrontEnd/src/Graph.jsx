@@ -9,6 +9,7 @@ function Graph() {
   const [username, setUsername] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [form, setform] = useState({});
+  const [graph, setGraph] = useState();
   const navigate = useNavigate(); 
 
   // on component load -> check auth
@@ -20,17 +21,17 @@ function Graph() {
           navigate('/login');
           return
       }
+
       try{
           const decodedToken = jwt_decode(token);
 
           setUsername(decodedToken.username)
           setIsAdmin(decodedToken.isAdmin)
-      } catch(err){
+        } catch(err){
           console.error(err);
           navigate('/login');
           return
-      }
-
+        }
   },[])
 
   function handleInputChange(key, newValue){
@@ -81,10 +82,37 @@ function Graph() {
     navigate("../Home");
   }
 
+  // TO IMPROVE
+  const generateGraph = async (e) =>{
+    e.preventDefault();
+
+    const generateURL = 'http://localhost:8080/graph/generate';
+    const options = {
+      method: 'GET',
+      headers: {
+        authorization: localStorage.getItem("token"),
+      }
+    }
+    
+    const response = await fetch(generateURL, options);
+
+    
+    if(response.status === 200){
+      const graphPath = "http://localhost:8080/annual_CO2_emissions_per_Countries.png"
+      console.log("Success");
+      setGraph(graphPath);   
+    }
+    else{
+      console.log("Generate Graph request Failed")
+    }
+  }
+
+  // TODO
   const saveGraph = () => {
 
   }
 
+  // TODO
   const downloadGraph = () => {
 
   }
@@ -220,11 +248,11 @@ function Graph() {
             <div className="col-8">
               <div className="container">
                 <div className="row">
-                  <button className="btn btn-success">Generate Graph</button>
+                  <button className="btn btn-success" onClick={generateGraph}>Generate Graph</button>
                 </div>
                 
                 <div className="row">
-                  <img src="\src\assets\co2_sample.jpg" alt="CO2 Graph" style={{ width: '600px', }}/>
+                  <img src={graph} alt="Graph" id="GraphImage" style={{ width: '600px', }}/>
                 </div>
                 <div className="row">
                   <div className="col-6">

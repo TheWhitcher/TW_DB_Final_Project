@@ -41,7 +41,7 @@ function Login() {
             theme: "dark",
         }
 
-        if(response.status == 200){
+        if(response.status === 200){
             const data = await response.json()
             const token = data.accessToken;
             localStorage.setItem('token', token);
