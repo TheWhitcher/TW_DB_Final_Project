@@ -8,11 +8,16 @@ const { connect } = require('./database/database');
 const userRouter = require('./routers/user.route');
 const graphRouter = require('./routers/graph.route');
 const { standardAuth, adminAuth } = require('./middlewares/auth.middleware');
+const path = require('path');
 
 // Middlewares
 app.use(cors());
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
+
+// Server static files
+const dataPath = path.join(__dirname, '..', 'Data')
+app.use(express.static(dataPath))
 
 // Health Route
 app.get('/', function(req, res) {
@@ -21,6 +26,7 @@ app.get('/', function(req, res) {
 
 // Auth Routes
 app.use('/user', userRouter);
+
 
 // Auth Middleware
 app.use(standardAuth);
