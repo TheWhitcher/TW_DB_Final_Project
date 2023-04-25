@@ -12,26 +12,27 @@ function Graph() {
   const [graph, setGraph] = useState();
   const navigate = useNavigate(); 
 
+  
   // on component load -> check auth
   useEffect(() => {
-      // verify auth
-      const token = localStorage.getItem('token');
-
-      if(!token){
-          navigate('/login');
-          return
-      }
-
-      try{
-          const decodedToken = jwt_decode(token);
-
-          setUsername(decodedToken.username)
-          setIsAdmin(decodedToken.isAdmin)
-        } catch(err){
-          console.error(err);
-          navigate('/login');
-          return
-        }
+    // verify auth
+    const token = localStorage.getItem('token');
+    
+    if(!token){
+      navigate('/login');
+      return
+    }
+    
+    try{
+      const decodedToken = jwt_decode(token);
+      
+      setUsername(decodedToken.username)
+      setIsAdmin(decodedToken.isAdmin)
+    } catch(err){
+      console.error(err);
+      navigate('/login');
+      return
+    }
   },[])
 
   function handleInputChange(key, newValue){
@@ -67,9 +68,7 @@ function Graph() {
         checkbox.checked = false;
         checkbox.disabled = true;
       }
-
     }
-
     setform(form);
     }
 
@@ -95,12 +94,15 @@ function Graph() {
     }
     
     const response = await fetch(generateURL, options);
-
     
     if(response.status === 200){
-      const graphPath = "http://localhost:8080/annual_CO2_emissions_per_Countries.png"
+      const jsonResponse = await response.json();
+
+      const graphPath = "http://localhost:8080/"
+      + jsonResponse.name;  
+      
       console.log("Success");
-      setGraph(graphPath);   
+      setGraph(graphPath);  
     }
     else{
       console.log("Generate Graph request Failed")

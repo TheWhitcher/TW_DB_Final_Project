@@ -16,12 +16,12 @@ app.use(morgan('tiny'));
 app.use(bodyParser.json());
 
 // Server static files
-const dataPath = path.join(__dirname, '..', 'Data')
-app.use(express.static(dataPath))
+const dataPath = path.join( __dirname, 'graphs')
+app.use('/graphs', express.static(dataPath))
 
 // Health Route
 app.get('/', function(req, res) {
-    res.send('Server Healthy')
+    res.status(200).send('Server Healthy')
 })
 
 // Auth Routes

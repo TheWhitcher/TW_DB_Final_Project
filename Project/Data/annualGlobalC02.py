@@ -32,5 +32,5 @@ sns.lineplot(
 )
 plt.title("Annual CO₂ emissions per Countries")
 #plt.show()
-plt.savefig("annual_CO2_emissions_per_Countries")
+plt.savefig("../BackEnd/graphs/annual_CO2_emissions_per_Countries")
 print("File Saved")
