@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 
 // Standard Authorization
 async function standardAuth(req,res,next){
+    if (req.path.startsWith('/graphs')){
+        return next();
+    }
     const authorization = req.headers.authorization;
 
     if(!authorization){

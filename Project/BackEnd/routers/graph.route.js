@@ -43,29 +43,31 @@ const GenerateGraph = () => {
 // Generate Graph
 router.get('/generate', async function(req,res){
     // TODO : Make Dynamic
-    const graphPath = "../../Data/annual_CO2_emisisons_per_Countries.png";
+    const graphName = "graphs/annual_CO2_emissions_per_Countries.png";
 
     // TODO: Make Dynamic by adding arguments.
     const result = await GenerateGraph();
 
     if(result === true){
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         res.status(200).send({
-        message: "Generate Graph succesfull."
+        message: "Generate Graph succesfull.",
+        name: graphName,
         });
     }
-    else{
+    else{   
         res.status(400).send({
             message: 'Python script failed',
         });
     }
 })
 
-// Save Graph Preset
+// TODO Save Graph Preset
 router.post('/save', async function(req,res){
 
 })
 
-// Download Graph
+// TODO Download Graph
 router.get('/download', async function(req,res){
 
 })
