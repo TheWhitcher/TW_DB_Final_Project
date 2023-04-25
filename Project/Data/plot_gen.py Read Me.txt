@@ -1,0 +1,43 @@
+plot_gen.py Read Me:
+
+How to generate a file:
+
+1) Make sure prototype_csv.csv is in the same folder then plot_gen.py
+
+2) Open the terminal and go to the root of plot_gen.py
+
+3) In the terminal type or copy the following:
+	python .\plot_gen.py
+
+4) Enter one or multiple countries in the G20. Separate the countries with a comma followed by a space, and press enter. Exemple: Canada, France, Italy 
+
+5) Enter the type of plot you would like to generate from the following:
+	-Annual CO2 emissions 
+      -CO2 Global Share
+	-Annual methane emissions
+	-Annual nitrous oxide emissions
+	-Per Capita CO2
+	-Carbon emission intensity of economies
+	-Nitrous oxide per population 
+	-Methane per population
+
+
+                                     )
+                            )      ((     (
+                           (        ))     )
+                    )       )      //     (
+               _   (        __    (     ~->>
+        ,-----' |__,_~~___<'__`)-~__--__-~->> <
+        | //  : | -__   ~__ o)____)),__ - '> >-  >
+        | //  : |- \_ \ -\_\ -\ \ \ ~\_  \ ->> - ,  >>
+        | //  : |_~_\ -\__\ \~'\ \ \, \__ . -<-  >>
+        `-----._| `  -__`-- - ~~ -- ` --~> >
+         _/___\_    //)_`//  | ||]
+   _____[_______]_[~~-_ (.L_/  ||
+  [____________________]' `\_,/'/
+    ||| /          |||  ,___,'./
+    ||| \          |||,'______|
+    ||| /          /|| I==||
+    ||| \       __/_||  __||__
+-----||-/------`-._/||-o--o---o---
+  ~~~~~'
