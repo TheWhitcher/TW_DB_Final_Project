@@ -76,7 +76,7 @@ router.post('/login', async function(req,res){
         const payload = {
             email: user.email,
             graphPresets: user.graphPresets,
-            isAdmin: user.isAdmin,
+            graphCount: user.graphCount,
         }
         const token = jwt.sign(payload, process.env.SECRET, {expiresIn: '1d'});
 

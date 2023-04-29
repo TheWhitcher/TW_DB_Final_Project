@@ -15,6 +15,7 @@ function Graph() {
 
   // Default Parameters
   let graphOptions = {
+    title: "Graph",
     type: "CO2",
     count: "PerCountry",
     world: false,
@@ -86,6 +87,10 @@ function Graph() {
       
       if (key === "r2worldTotal"){
         graphOptions.world = newValue;
+      }
+
+      if (key == "graphName"){
+        graphOptions.title = newValue
       }
 
     setform(form);
@@ -318,17 +323,34 @@ function Graph() {
                 </div>
                 <div className="row">
                   <div className="col-6">
-                    <button className='btn btn-success' onClick={saveGraph}>Save</button>
+                    <button className='btn btn-primary' data-bs-toggle="modal" data-bs-target="#staticBackdrop">Save</button> 
                   </div>
                   <div className="col-6">
-                    <button className='btn btn-success' onClick={downloadGraph}>Download</button>
+                    <button className='btn btn-primary' onClick={downloadGraph}>Download</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">Graph Preset Name</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body mb-3">
+                    <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('graphName', event.target.value)}/>
+                </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-success" data-bs-dismiss="modal" onClick={saveGraph}>Save</button>
+              <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
   )
 }
 

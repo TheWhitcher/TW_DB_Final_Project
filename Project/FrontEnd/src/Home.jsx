@@ -42,7 +42,7 @@ function Home() {
     return (
         <div className="App">
             <h1>Welcome {email}</h1>
-            <p>You are logged in! {isAdmin? "You are an admin BTW.": ""}</p>
+            <p>You are logged in!</p>
             <div>
                 <button className='btn btn-success mx-1' onClick={graphRoute}>Graphs</button>
                 <button className='btn btn-success mx-1' onClick={logoutRoute}>Logout</button>
