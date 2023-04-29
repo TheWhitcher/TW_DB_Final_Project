@@ -4,6 +4,40 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
+// Validate Password strength
+function validatePassword(password){
+    const lengthRegex = /.{8}.*/;
+    const lengthTest = lengthRegex.test(password);
+    console.log('lengthTest: ', lengthTest);
+
+    const upperRegex = /[A-Z]/;
+    const upperTest = upperRegex.test(password)
+    console.log('upperTest: ', upperTest);
+
+    const lowerRegex = /[a-z]/;
+    const lowerTest = lowerRegex.test(password)
+    console.log('lowerTest: ', lowerTest);
+
+    const numbersRegex = /\d/;
+    const numbersTest = numbersRegex.test(password)
+    console.log('numbersTest: ', numbersTest);
+    
+    const specialRegex = /[!#$%&'*+\/=?^_`.{|}~-]/;
+    const specialTest = specialRegex.test(password);
+    console.log('specialTest: ', specialTest);
+
+    const results = {
+        length: lengthTest,
+        upper: upperTest,
+        lower: lowerTest,
+        number: numbersTest,
+        special: specialTest,
+    }
+
+    return results
+}
+
+// Register a new user
 function Register() {
 
     const [form, setform] = useState({});
@@ -32,9 +66,27 @@ function Register() {
         toast.error("Passwords don't match", toastOptions)
         return
     }
+    
+    const results = validatePassword(form.password)
 
-    if(!validatePassword(form.password)){
-        toast.error("Password does not match criteria", toastOptions)
+    if(!results.length){
+        toast.error("Password must be at least 8 characters long.", toastOptions)
+        return
+    }
+    else if(!results.upper){
+        toast.error("Password must contain 1 upper case letter.", toastOptions)
+        return
+    }
+    else if(!results.lower){
+        toast.error("Password must contain 1 lower case letter.", toastOptions)
+        return
+    }
+    else if(!results.number){
+        toast.error("Password must contain 1 number.", toastOptions)
+        return
+    }
+    else if(!results.special){
+        toast.error("Password must contain 1 special character.", toastOptions)
         return
     }
 
@@ -58,30 +110,8 @@ function Register() {
         toast.error("Register failed", toastOptions);
     }
 
-    function validatePassword(password){
-        const lengthRegex = /.{8}.*/;
-        const lengthTest = lengthRegex.test(password);
-        console.log('lengthTest: ', lengthTest);
 
-        const upperRegex = /[A-Z]/;
-        const upperTest = upperRegex.test(password)
-        console.log('upperTest: ', upperTest);
-
-        const lowerRegex = /[a-z]/;
-        const lowerTest = lowerRegex.test(password)
-        console.log('lowerTest: ', lowerTest);
-
-        const numbersRegex = /\d/;
-        const numbersTest = numbersRegex.test(password)
-        console.log('numbersTest: ', numbersTest);
-        
-        const specialRegex = /[!#$%&'*+\/=?^_`.{|}~-]/;
-        const specialTest = specialRegex.test(password);
-        console.log('specialTest: ', specialTest);
-
-        return lengthTest && upperTest && lowerTest && numbersTest && specialTest;
-    }
-    }
+}
 
   return (
       <div className="App">

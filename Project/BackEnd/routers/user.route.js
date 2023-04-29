@@ -39,6 +39,7 @@ router.post('/register', async function(req,res){
         dateOfBirth: body.dateOfBirth,
         fieldOfWork: body.fieldOfWork,
         graphPresets: [],
+        graphCount: 0,
         isAdmin: false,
     })
 

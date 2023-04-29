@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { saveAs } from 'file-saver';
 import jwt_decode from 'jwt-decode';
 import './App.css'
 
@@ -9,10 +10,17 @@ function Graph() {
   const [username, setUsername] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [form, setform] = useState({});
-  const [graph, setGraph] = useState();
+  const [graph, setGraph] = useState({});
   const navigate = useNavigate(); 
 
-  
+  // Default Parameters
+  let graphOptions = {
+    type: "CO2",
+    count: "PerCountry",
+    world: false,
+    countries: ["Canada", "China", "Japan", "UnitedKingdom", "UnitedStates"]
+  }
+
   // on component load -> check auth
   useEffect(() => {
     // verify auth
@@ -28,16 +36,17 @@ function Graph() {
       
       setUsername(decodedToken.username)
       setIsAdmin(decodedToken.isAdmin)
-    } catch(err){
+    } 
+    catch(err){
       console.error(err);
       navigate('/login');
       return
     }
   },[])
 
+  // Handels change of input for all components
   function handleInputChange(key, newValue){
     form[key] = newValue;
-    console.log('newValue: ', newValue);
 
     // Filter Country List by Search bar value
     if (key === "search"){      
@@ -60,32 +69,62 @@ function Graph() {
     // Enable/Disable Relative to world checkbox
     if (key === "count"){
        const checkbox = document.getElementById("relativeCheckbox")
-        
-      if(newValue === "PerCountry"){
-        checkbox.disabled = false;
+        graphOptions.count = newValue
+        if(newValue === "PerCountry"){
+          checkbox.disabled = false;
+        }
+        else{
+          checkbox.checked = false;
+          graphOptions.world = false;
+          checkbox.disabled = true;
+        }
       }
-      else{
-        checkbox.checked = false;
-        checkbox.disabled = true;
+      
+      if (key === "gasType"){
+        graphOptions.type = newValue;
       }
-    }
+      
+      if (key === "r2worldTotal"){
+        graphOptions.world = newValue;
+      }
+
     setform(form);
     }
+  
+  // Overided handleInputChange
+  function handleCountryList(key, newValue, inputType){
+    form[key] = newValue;
 
+    if (inputType){
+      graphOptions.countries.push(newValue);
+    }
+    else{
+      const index = graphOptions.countries.indexOf(newValue)
+      graphOptions.countries.splice(index, 1);
+    }
+    
+    console.log('graphOptions: ', graphOptions);
+    setform(form);
+  }
+
+  // Log out brings to home page and removes localStorage token
   const logoutRoute = () =>{ 
     localStorage.removeItem("token");
     navigate("../"); 
   }
 
+  // Returns to the home page
   const homeRoute = () =>{
     navigate("../Home");
   }
 
-  // TO IMPROVE
+  // TODO: IMPROVE 
+  // Make a request to generate a python script that will provide a graph as an image.
   const generateGraph = async (e) =>{
     e.preventDefault();
 
-    const generateURL = 'http://localhost:8080/graph/generate';
+    // TODO: create dynamic url link
+    const url = 'http://localhost:8080/graph/generate';
     const options = {
       method: 'GET',
       headers: {
@@ -93,30 +132,51 @@ function Graph() {
       }
     }
     
-    const response = await fetch(generateURL, options);
-    
-    if(response.status === 200){
+    try{
+      const response = await fetch(url, options);
       const jsonResponse = await response.json();
 
-      const graphPath = "http://localhost:8080/"
-      + jsonResponse.name;  
+      setGraph(jsonResponse.image); 
+      console.log('jsonResponse.image: ', jsonResponse.image);
       
       console.log("Success");
-      setGraph(graphPath);  
     }
-    else{
+    catch (error){
       console.log("Generate Graph request Failed")
+      console.log('error: ', error);
     }
   }
 
-  // TODO
-  const saveGraph = () => {
-
+  // Saves current graph settings to the database
+  const saveGraph = async (e) => {
+    const url = 'http://localhost:8080/graph/save';
+    const options = {
+      method: 'POST',
+      headers: {
+        'authorization': localStorage.getItem("token"),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(graphOptions)
+    }
+        
+    try{
+      const response = await fetch(url, options);
+      console.log("Success");
+    }
+    catch (error){
+      console.log("Save request Failed")
+      console.log('error: ', error);
+    }
   }
 
-  // TODO
+  // TODO: Create logic to download the generated image.
   const downloadGraph = () => {
-
+    // const url = graph;
+    // filename = "graph"
+    // fetch(url)
+    // .then(response => response.blob())
+    // .then(blob => { saveAs(blob, filename);
+    // });
   }
 
   return (
@@ -131,21 +191,21 @@ function Graph() {
             <div className="col-3">
               <label htmlFor="gasType">Gas Type</label>
               <div className="input-group mb-3">
-                <select className="form-select" id="inputGroupSelect01" onChange={(event) => handleInputChange('gasType', event.target.value)}>
+                <select className="form-select" id="GasTypeSelect" onChange={(event) => handleInputChange('gasType', event.target.value)}>
                   <option value="CO2">CO&#178;</option>
                   <option value="Methane">Methane</option>
                   <option value="Nitrous Oxide">Nitrous Oxide</option>
                 </select>
               </div>
             </div>
-
+            
             <div className="col-3">
               <label htmlFor="gasType">Count</label>
               <div className="input-group mb-3">
                 <select className="form-select" id="inputGroupSelect01" onChange={(event) => handleInputChange('count', event.target.value)}>
-                  <option value="PerCountry">Per Country</option>
-                  <option value="PerCapita">Per Capita</option>
-                  <option value="PerDolofGDP">Per $ of GDP</option>
+                  <option value="Per Country">Per Country</option>
+                  <option value="Per Capita">Per Capita</option>
+                  <option value="Emission Per Dollar">Per $ of GDP</option>
                 </select>
               </div>
             </div>
@@ -165,83 +225,83 @@ function Graph() {
 
               <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Argentina" id="ARGcheckbox" onChange={(event) => handleInputChange('ARGcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Argentina" id="ARGcheckbox" onChange={(event) => handleCountryList('ARGcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxOne">Argentina</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Australia" id="AUScheckbox" onChange={(event) => handleInputChange('AUScheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Australia" id="AUScheckbox" onChange={(event) => handleCountryList('AUScheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxTwo">Australia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Brazil" id="BRAcheckbox" onChange={(event) => handleInputChange('BRAcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Brazil" id="BRAcheckbox" onChange={(event) => handleCountryList('BRAcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxThree">Brazil</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="Canada" id="CANcheckbox" onChange={(event) => handleInputChange('CANcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="Canada" id="CANcheckbox" onChange={(event) => handleCountryList('CANcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFour" >Canada</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="China" id="CHNcheckbox" onChange={(event) => handleInputChange('CHNcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="China" id="CHNcheckbox" onChange={(event) => handleCountryList('CHNcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFive">China</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="European Union" id="EUUcheckbox" onChange={(event) => handleInputChange('EUUcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="European Union" id="EUUcheckbox" onChange={(event) => handleCountryList('EUUcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSix">European Union</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="France" id="FRAcheckbox" onChange={(event) => handleInputChange('FRAcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="France" id="FRAcheckbox" onChange={(event) => handleCountryList('FRAcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSeven">France</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Germany" id="DEUcheckbox" onChange={(event) => handleInputChange('DEUcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Germany" id="DEUcheckbox" onChange={(event) => handleCountryList('DEUcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxEight">Germany</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="India" id="INDcheckbox" onChange={(event) => handleInputChange('INDcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="India" id="INDcheckbox" onChange={(event) => handleCountryList('INDcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxNine">India</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Indonesia" id="IDNcheckbox" onChange={(event) => handleInputChange('IDNcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Indonesia" id="IDNcheckbox" onChange={(event) => handleCountryList('IDNcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxTen">Indonesia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Italy" id="ITAcheckbox" onChange={(event) => handleInputChange('ITAcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Italy" id="ITAcheckbox" onChange={(event) => handleCountryList('ITAcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxEleven">Italy</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="Japan" id="JPNcheckbox" onChange={(event) => handleInputChange('JPNcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="Japan" id="JPNcheckbox" onChange={(event) => handleCountryList('JPNcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxTwelve" >Japan</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Mexico" id="MEXcheckbox" onChange={(event) => handleInputChange('MEXcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Mexico" id="MEXcheckbox" onChange={(event) => handleCountryList('MEXcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxThirteen">Mexico</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Russia" id="RUScheckbox" onChange={(event) => handleInputChange('RUScheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Russia" id="RUScheckbox" onChange={(event) => handleCountryList('RUScheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFourteen">Russia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Saudi Arabia" id="SAUcheckbox" onChange={(event) => handleInputChange('SAUcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Saudi Arabia" id="SAUcheckbox" onChange={(event) => handleCountryList('SAUcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxFifteen">Saudi Arabia</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="South Africa" id="ZAFcheckbox" onChange={(event) => handleInputChange('ZAFcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="South Africa" id="ZAFcheckbox" onChange={(event) => handleCountryList('ZAFcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSixteen">South Africa</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="South Korea" id="KORcheckbox" onChange={(event) => handleInputChange('KORcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="South Korea" id="KORcheckbox" onChange={(event) => handleCountryList('KORcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSeventeen">South Korea</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" value="Turkey" id="TURcheckbox" onChange={(event) => handleInputChange('TURcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" value="Turkey" id="TURcheckbox" onChange={(event) => handleCountryList('TURcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxEighteen">Turkey</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="United Kingdon" id="GBRcheckbox" onChange={(event) => handleInputChange('GBRcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="United Kingdom" id="GBRcheckbox" onChange={(event) => handleCountryList('GBRcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxNineteen">United Kingdom</label>
                 </li>
                 <li className="list-group-item px-1">
-                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="United States" id="USAcheckbox" onChange={(event) => handleInputChange('USAcheckBox', event.target.checked)}/>
+                  <input className="form-check-input me-3" type="checkbox" defaultChecked={true} value="United States" id="USAcheckbox" onChange={(event) => handleCountryList('USAcheckBox', event.target.value, event.target.checked)}/>
                   <label className="form-check-label" htmlFor="checkBoxSeven">United States</label>
                 </li>
               </ul>

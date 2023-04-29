@@ -4,7 +4,10 @@ const router = express.Router()
 const { client } = require('../database/database');
 const { spawn } = require('child_process');
 const path = require('path');
-const { restart } = require('nodemon');
+const fs = require('fs');
+const Blob = require('blob');
+const jwt = require('jsonwebtoken');
+
 
 
 const database = client.db("emission_users");
@@ -42,34 +45,67 @@ const GenerateGraph = () => {
 
 // Generate Graph
 router.get('/generate', async function(req,res){
-    // TODO : Make Dynamic
-    const graphName = "graphs/annual_CO2_emissions_per_Countries.png";
-
     // TODO: Make Dynamic by adding arguments.
-    const result = await GenerateGraph();
+    try{
+        const result = await GenerateGraph();
+        const imagePath = path.join(__dirname, "..", "..", "Data", "images", "graph.png");
 
-    if(result === true){
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.status(200).send({
-        message: "Generate Graph succesfull.",
-        name: graphName,
-        });
+        const pngBuffer = fs.readFileSync(imagePath)
+
+        const pngBlob = new blob([pngBuffer], {type: 'image/png'})
+        // fs.readFile(imagePath, function(err, data) {
+        //     if(err) {
+        //         console.log('err: ', err);
+        //         return;
+        //     }
+
+        //     const blob = Blob([data], {type: 'image/png'});
+        //     const dataURL = blobUtil.createObjectURL(blob);
+
+        //     res.status(200).send({
+        //         message: "Generate Graph succesfull.",
+        //         image: dataURL
+        //     });
+        //     console.log("Python Success");
+        // })
     }
-    else{   
+    catch (error){
+
         res.status(400).send({
             message: 'Python script failed',
+            error: error,
         });
+
+        console.log("Python Failed");
+        console.log('error: ', error);
     }
 })
 
-// TODO Save Graph Preset
+// Save graph preset to the users document in the database.
 router.post('/save', async function(req,res){
+    const data = req.body;
+    const authorization = req.headers.authorization;
+    try{
 
-})
-
-// TODO Download Graph
-router.get('/download', async function(req,res){
-
+        const payload = jwt.verify(authorization, process.env.SECRET);
+        const user = await usercollection.findOne({email: payload.email})
+        
+        let count = user.graphCount;
+        count++;
+        
+        await usercollection.updateOne({email: payload.email}, {$push: {graphPresets: {graph: data}}, $set: {graphCount: count}})
+        
+        res.status(200).send({
+            message: "Database updated."
+        });
+    }
+    catch (error){
+        console.log("Update Failed");
+        res.status(500).send({
+            message: "Error updating Database",
+            error: error,
+        });
+    }
 })
 
 module.exports = router;
