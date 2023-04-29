@@ -17,9 +17,9 @@ function Graph() {
   let graphOptions = {
     title: "Graph",
     type: "CO2",
-    count: "PerCountry",
+    count: "Per Country",
     world: false,
-    countries: ["Canada", "China", "Japan", "UnitedKingdom", "UnitedStates"]
+    countries: ["Canada", "China", "Japan", "United Kingdom", "United States"]
   }
 
   // on component load -> check auth
@@ -71,7 +71,7 @@ function Graph() {
     if (key === "count"){
        const checkbox = document.getElementById("relativeCheckbox")
         graphOptions.count = newValue
-        if(newValue === "PerCountry"){
+        if(newValue === "Per Country"){
           checkbox.disabled = false;
         }
         else{

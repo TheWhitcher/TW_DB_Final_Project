@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const { connect } = require('./database/database');
 const userRouter = require('./routers/user.route');
 const graphRouter = require('./routers/graph.route');
-const { standardAuth, adminAuth } = require('./middlewares/auth.middleware');
+const { standardAuth } = require('./middlewares/auth.middleware');
 const path = require('path');
 
 // Middlewares

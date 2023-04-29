@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import './App.css'
+import './App.css';
+import Row from './components/Row.jsx';
+import Header from './components/Header.jsx';
+
 
 function Home() {
   
     const [email, setUsername] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [graphData, setGraphData] = useState([]);
     const navigate = useNavigate(); 
 
     // on component load -> check auth
-    useEffect(() => {
+    useEffect( () => {
         // verify auth
         const token = localStorage.getItem('token');
 
@@ -20,7 +24,7 @@ function Home() {
         }
         try{
             const decodedToken = jwt_decode(token);
-
+            fetchPresets();
             setUsername(decodedToken.email)
             setIsAdmin(decodedToken.isAdmin)
         } catch(err){
@@ -29,14 +33,32 @@ function Home() {
             return
         }
 
-    },[])
+    },[]);
+
+    // Get user presets form the database
+    const fetchPresets = async (e) => {
+        const token = localStorage.getItem('token');
+        const url = 'http://localhost:8080/user/graphs';
+        const options = {
+          method: 'GET',
+          headers: {
+            authorization: token,
+          }
+        }
+
+        const response = await fetch(url, options)
+        const jsonResponse = await response.json();
+        setGraphData(jsonResponse.graphPresets)
+    }
+
+    // Remove localstorage token and return user to login screen
     const logoutRoute = () =>{ 
         localStorage.removeItem("token");
-        navigate("../"); 
+        navigate("/login"); 
     }
 
     const graphRoute = () =>{
-        navigate("../Graph");
+        navigate("/Graph");
       }
 
     return (
@@ -49,6 +71,12 @@ function Home() {
             </div>
 
             <h3 className="text-start mt-5">Your Saved Graphs</h3>
+            <div className="container border p-0 bg-light">
+            <Header title="Title" type="Type" count="Count" style="fw-bold text-bg-secondary"/>
+                {graphData.map((data, index) => { 
+                    return <Row key={index} index={index} title={data.graph.title} type={data.graph.type} count={data.graph.count}/>
+                })}
+            </div>
             
         </div>
     )

@@ -4,6 +4,8 @@ const router = express.Router()
 const { client } = require('../database/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { standardAuth } = require('../middlewares/auth.middleware');
+
 
 const database = client.db("emission_users");
 const usercollection = database.collection("users");
@@ -89,6 +91,28 @@ router.post('/login', async function(req,res){
         res.status(401).send({
             message: "Bad username or password"
         })
+    }
+})
+
+router.get('/graphs', standardAuth, async function(req,res){
+    const authorization = req.headers.authorization;
+
+    try{
+
+        const payload = jwt.verify(authorization, process.env.SECRET);
+        const user = await usercollection.findOne({email: payload.email})
+        
+        console.log('user.graphPresets: ', user.graphPresets);
+        res.status(200).send({
+            message: "Data received.",
+            graphPresets: user.graphPresets
+        });
+    }
+    catch (error){
+        res.status(500).send({
+            message: "Error Accessing Database",
+            error: error,
+        });
     }
 })
 

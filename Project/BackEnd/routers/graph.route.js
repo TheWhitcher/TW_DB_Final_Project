@@ -108,4 +108,25 @@ router.post('/save', async function(req,res){
     }
 })
 
+router.get('/graphs', async function(req,res){
+    const authorization = req.headers.authorization;
+
+    try{
+
+        const payload = jwt.verify(authorization, process.env.SECRET);
+        const user = await usercollection.findOne({email: payload.email})
+        
+        res.status(200).send({
+            message: "Data received.",
+            graphPresets: user.graphPresets
+        });
+    }
+    catch (error){
+        res.status(500).send({
+            message: "Error Accessing Database",
+            error: error,
+        });
+    }
+})
+
 module.exports = router;
