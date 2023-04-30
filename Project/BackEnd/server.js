@@ -27,7 +27,6 @@ app.get('/', function(req, res) {
 // Auth Routes
 app.use('/user', userRouter);
 
-
 // Auth Middleware
 app.use(standardAuth);
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import './App.css';
 import Row from './components/Row.jsx';
@@ -7,12 +7,14 @@ import Header from './components/Header.jsx';
 
 
 function Home() {
-  
+// TODO: Refresh page when a preset is deleted
+// TODO: Load preset into graph page
+
     const [email, setUsername] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [graphData, setGraphData] = useState([]);
     const navigate = useNavigate(); 
-
+    
     // on component load -> check auth
     useEffect( () => {
         // verify auth
@@ -59,7 +61,7 @@ function Home() {
 
     const graphRoute = () =>{
         navigate("/Graph");
-      }
+    }
 
     return (
         <div className="App">
@@ -71,13 +73,13 @@ function Home() {
             </div>
 
             <h3 className="text-start mt-5">Your Saved Graphs</h3>
+
             <div className="container border p-0 bg-light">
-            <Header title="Title" type="Type" count="Count" style="fw-bold text-bg-secondary"/>
+                <Header title="Title" type="Type" count="Count" style="fw-bold text-bg-secondary"/>
                 {graphData.map((data, index) => { 
-                    return <Row key={index} index={index} title={data.graph.title} type={data.graph.type} count={data.graph.count}/>
+                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count}/>
                 })}
             </div>
-            
         </div>
     )
 }

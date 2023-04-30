@@ -8,8 +8,6 @@ const fs = require('fs');
 const Blob = require('blob');
 const jwt = require('jsonwebtoken');
 
-
-
 const database = client.db("emission_users");
 const usercollection = database.collection("users");
 
@@ -84,16 +82,12 @@ router.get('/generate', async function(req,res){
 // Save graph preset to the users document in the database.
 router.post('/save', async function(req,res){
     const data = req.body;
+    console.log('data: ', data);
     const authorization = req.headers.authorization;
     try{
 
         const payload = jwt.verify(authorization, process.env.SECRET);
-        const user = await usercollection.findOne({email: payload.email})
-        
-        let count = user.graphCount;
-        count++;
-        
-        await usercollection.updateOne({email: payload.email}, {$push: {graphPresets: {graph: data}}, $set: {graphCount: count}})
+        await usercollection.findOneAndUpdate({email: payload.email}, {$push: {graphPresets: data}})
         
         res.status(200).send({
             message: "Database updated."
@@ -101,29 +95,10 @@ router.post('/save', async function(req,res){
     }
     catch (error){
         console.log("Update Failed");
+        console.log('error: ', error);
+
         res.status(500).send({
             message: "Error updating Database",
-            error: error,
-        });
-    }
-})
-
-router.get('/graphs', async function(req,res){
-    const authorization = req.headers.authorization;
-
-    try{
-
-        const payload = jwt.verify(authorization, process.env.SECRET);
-        const user = await usercollection.findOne({email: payload.email})
-        
-        res.status(200).send({
-            message: "Data received.",
-            graphPresets: user.graphPresets
-        });
-    }
-    catch (error){
-        res.status(500).send({
-            message: "Error Accessing Database",
             error: error,
         });
     }

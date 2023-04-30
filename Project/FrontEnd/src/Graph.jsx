@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 import jwt_decode from 'jwt-decode';
 import './App.css'
+import { nanoid } from 'nanoid';
 
 
 function Graph() {
@@ -11,16 +12,24 @@ function Graph() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [form, setform] = useState({});
   const [graph, setGraph] = useState({});
-  const navigate = useNavigate(); 
+  const [graphPreset, setPrest] = useState({index: 0,
+    title: "Graph",
+    type: "CO2",
+    count: "Per Country",
+    world: false,
+    countries: ["Canada", "China", "Japan", "United Kingdom", "United States"]})
+  const navigate = useNavigate();
 
   // Default Parameters
   let graphOptions = {
+    index: "",
     title: "Graph",
     type: "CO2",
     count: "Per Country",
     world: false,
     countries: ["Canada", "China", "Japan", "United Kingdom", "United States"]
   }
+
 
   // on component load -> check auth
   useEffect(() => {
@@ -34,7 +43,6 @@ function Graph() {
     
     try{
       const decodedToken = jwt_decode(token);
-      
       setUsername(decodedToken.username)
       setIsAdmin(decodedToken.isAdmin)
     } 
@@ -123,8 +131,8 @@ function Graph() {
     navigate("../Home");
   }
 
-  // TODO: IMPROVE 
-  // Make a request to generate a python script that will provide a graph as an image.
+  // TODO: IMPROVE Currently not working
+  // Make a request to run a python script that will generate a graph as an image.
   const generateGraph = async (e) =>{
     e.preventDefault();
 
@@ -143,8 +151,13 @@ function Graph() {
 
       setGraph(jsonResponse.image); 
       console.log('jsonResponse.image: ', jsonResponse.image);
-      
-      console.log("Success");
+      if (response.status === 200){
+        console.log("Success");
+      }
+      else{
+        console.log("Generate Graph request Failed")
+        console.log('error: ', error);
+      }
     }
     catch (error){
       console.log("Generate Graph request Failed")
@@ -154,6 +167,8 @@ function Graph() {
 
   // Saves current graph settings to the database
   const saveGraph = async (e) => {
+    const input = document.getElementById("modalInput");
+    graphOptions.index = nanoid();
     const url = 'http://localhost:8080/graph/save';
     const options = {
       method: 'POST',
@@ -163,10 +178,24 @@ function Graph() {
       },
       body: JSON.stringify(graphOptions)
     }
-        
-    try{
-      const response = await fetch(url, options);
-      console.log("Success");
+    
+    try{   
+      if(input.value != ""){
+        const response = await fetch(url, options);
+
+        if (response.status === 200){
+          input.value = "";
+          input.setAttribute("data-bs-dismiss", "modal")
+          console.log("Success");
+        }
+        else{
+          console.log("Save request Failed")
+          console.log('error: ', error);
+        }
+      } 
+      else{
+        alert("Graph name required");
+      }  
     }
     catch (error){
       console.log("Save request Failed")
@@ -174,7 +203,7 @@ function Graph() {
     }
   }
 
-  // TODO: Create logic to download the generated image.
+  // TODO: Download the generated graph image.
   const downloadGraph = () => {
     // const url = graph;
     // filename = "graph"
@@ -199,7 +228,7 @@ function Graph() {
                 <select className="form-select" id="GasTypeSelect" onChange={(event) => handleInputChange('gasType', event.target.value)}>
                   <option value="CO2">CO&#178;</option>
                   <option value="Methane">Methane</option>
-                  <option value="Nitrous Oxide">Nitrous Oxide</option>
+                  <option value="N2O">Nitrous Oxide</option>
                 </select>
               </div>
             </div>
@@ -210,7 +239,7 @@ function Graph() {
                 <select className="form-select" id="inputGroupSelect01" onChange={(event) => handleInputChange('count', event.target.value)}>
                   <option value="Per Country">Per Country</option>
                   <option value="Per Capita">Per Capita</option>
-                  <option value="Emission Per Dollar">Per $ of GDP</option>
+                  <option value="Per Dollar">Per $ of GDP</option>
                 </select>
               </div>
             </div>
@@ -321,10 +350,12 @@ function Graph() {
                 <div className="row">
                   <img src={graph} alt="Graph" id="GraphImage" style={{ width: '600px', }}/>
                 </div>
+
                 <div className="row">
                   <div className="col-6">
                     <button className='btn btn-primary' data-bs-toggle="modal" data-bs-target="#staticBackdrop">Save</button> 
                   </div>
+
                   <div className="col-6">
                     <button className='btn btn-primary' onClick={downloadGraph}>Download</button>
                   </div>
@@ -333,6 +364,7 @@ function Graph() {
             </div>
           </div>
         </div>
+
         <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -341,10 +373,10 @@ function Graph() {
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body mb-3">
-                    <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required onChange={(event) => handleInputChange('graphName', event.target.value)}/>
+                    <input type="text" className="form-control" id="modalInput" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" placeholder='Enter name here' required onChange={(event) => handleInputChange('graphName', event.target.value)}/>
                 </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-success" data-bs-dismiss="modal" onClick={saveGraph}>Save</button>
+              <button type="button" className="btn btn-success" onClick={saveGraph}>Save</button>
               <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
