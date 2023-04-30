@@ -14,6 +14,7 @@ function Home() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [graphData, setGraphData] = useState([]);
     const navigate = useNavigate(); 
+
     
     // on component load -> check auth
     useEffect( () => {
@@ -63,6 +64,27 @@ function Home() {
         navigate("/Graph");
     }
 
+    // Make a delete request.
+    async function deletePreset(i){
+        const index = {index: i};
+
+        const url = "http://localhost:8080/user/deletePreset"
+        const options = {
+        method: 'DELETE',
+        headers: {
+            'authorization': localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(index)
+        }
+
+        const response = await fetch(url, options);
+        if (response.ok){
+            const newData = graphData.filter((data) => data.index != i)
+            setGraphData(newData);
+        }
+    }
+
     return (
         <div className="App">
             <h1>Welcome {email}</h1>
@@ -77,7 +99,7 @@ function Home() {
             <div className="container border p-0 bg-light">
                 <Header title="Title" type="Type" count="Count" style="fw-bold text-bg-secondary"/>
                 {graphData.map((data, index) => { 
-                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count}/>
+                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count} deletePreset={deletePreset}/>
                 })}
             </div>
         </div>

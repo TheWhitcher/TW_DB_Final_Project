@@ -118,6 +118,7 @@ router.delete('/deletePreset', standardAuth, async function(req,res){
     try{
         const authorization = req.headers.authorization;
         const index = req.body.index;
+        console.log('req.body: ', req.body);
 
         const payload = jwt.verify(authorization, process.env.SECRET);
         const user = await usercollection.findOneAndUpdate({email: payload.email}, {$pull: {graphPresets: {index: index}}});

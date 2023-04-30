@@ -5,7 +5,6 @@ import jwt_decode from 'jwt-decode';
 import './App.css'
 import { nanoid } from 'nanoid';
 
-
 function Graph() {
   
   const [username, setUsername] = useState(null);
@@ -52,6 +51,11 @@ function Graph() {
       return
     }
   },[])
+
+  // TODO: Set preset values
+  function loadPreset(){
+
+  }
 
   // Handels change of input for all components
   function handleInputChange(key, newValue){
@@ -185,7 +189,7 @@ function Graph() {
 
         if (response.status === 200){
           input.value = "";
-          input.setAttribute("data-bs-dismiss", "modal")
+          document.getElementById("modalClose").click();
           console.log("Success");
         }
         else{
@@ -365,11 +369,11 @@ function Graph() {
           </div>
         </div>
 
-        <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">Graph Preset Name</h5>
+              <h5 className="modal-title" id="modalLabel">Graph Preset Name</h5>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body mb-3">
@@ -377,7 +381,7 @@ function Graph() {
                 </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-success" onClick={saveGraph}>Save</button>
-              <button type="button" className="btn btn-danger" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-danger" id="modalClose" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>

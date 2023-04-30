@@ -7,22 +7,6 @@ function Row(props) {
   function loadPreset(){
   }
 
-  // Make a delete request.
-  async function deletePreset(){
-    const index = {index: props.index};
-    const url = "http://localhost:8080/user/deletePreset"
-    const options = {
-      method: 'DELETE',
-      headers: {
-        'authorization': localStorage.getItem("token"),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(index)
-    }
-
-    const response = await fetch(url, options);
-  }
-
   return (
     <>
         <div className= {props.style}>
@@ -33,7 +17,7 @@ function Row(props) {
               <div className="col-3 btn-group btn-group-sm" role="group" aria-label="Basic example">
                 <button className='btn btn-primary' onClick={loadPreset}>Load</button>
                   
-                  <button className='btn btn-danger' onClick={deletePreset}>Delete</button>
+                  <button className='btn btn-danger' onClick={(event) => props.deletePreset(props.index)}>Delete</button>
               </div>
             </div>
         </div>
