@@ -5,11 +5,7 @@ import './App.css';
 import Row from './components/Row.jsx';
 import Header from './components/Header.jsx';
 
-
 function Home() {
-// TODO: Refresh page when a preset is deleted
-// TODO: Load preset into graph page
-
     const [email, setUsername] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [graphData, setGraphData] = useState([]);
@@ -61,6 +57,7 @@ function Home() {
     }
 
     const graphRoute = () =>{
+        localStorage.setItem("presetID", "default");
         navigate("/Graph");
     }
 
@@ -85,21 +82,27 @@ function Home() {
         }
     }
 
+    // Load preset into localsotrage.
+    async function loadPreset(i){
+        localStorage.setItem("presetID", i);
+        navigate("/Graph");
+    }
+
     return (
         <div className="App">
             <h1>Welcome {email}</h1>
             <p>You are logged in!</p>
-            <div>
-                <button className='btn btn-success mx-1' onClick={graphRoute}>Graphs</button>
-                <button className='btn btn-success mx-1' onClick={logoutRoute}>Logout</button>
-            </div>
 
-            <h3 className="text-start mt-5">Your Saved Graphs</h3>
+            <div>
+                <button className='btn btn-primary btn-sm mx-1' onClick={graphRoute}>Graphs</button>
+                <button className='btn btn-danger btn-sm mx-1' onClick={logoutRoute}>Logout</button>
+            </div>
+            <h3 className="text-start mt-2">Your Saved Graphs</h3>
 
             <div className="container border p-0 bg-light">
                 <Header title="Title" type="Type" count="Count" style="fw-bold text-bg-secondary"/>
                 {graphData.map((data, index) => { 
-                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count} deletePreset={deletePreset}/>
+                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count} deletePreset={deletePreset} loadPreset={loadPreset}/>
                 })}
             </div>
         </div>
