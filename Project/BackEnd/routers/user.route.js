@@ -4,6 +4,7 @@ const router = express.Router()
 const { client } = require('../database/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { standardAuth } = require('../middlewares/auth.middleware');
 
 const database = client.db("emission_users");
 const usercollection = database.collection("users");
@@ -39,7 +40,6 @@ router.post('/register', async function(req,res){
         dateOfBirth: body.dateOfBirth,
         fieldOfWork: body.fieldOfWork,
         graphPresets: [],
-        graphCount: 0,
         isAdmin: false,
     })
 
@@ -89,6 +89,50 @@ router.post('/login', async function(req,res){
         res.status(401).send({
             message: "Bad username or password"
         })
+    }
+})
+
+// Get user graph presets
+router.get('/graphs', standardAuth, async function(req,res){
+    const authorization = req.headers.authorization;
+
+    try{
+        const payload = jwt.verify(authorization, process.env.SECRET);
+        const user = await usercollection.findOne({email: payload.email})
+        
+        res.status(200).send({
+            message: "Data received.",
+            graphPresets: user.graphPresets
+        });
+    }
+    catch (error){
+        res.status(500).send({
+            message: "Error Accessing Database",
+            error: error,
+        });
+    }
+})
+
+// Delete a graph preset
+router.delete('/deletePreset', standardAuth, async function(req,res){
+    try{
+        const authorization = req.headers.authorization;
+        const index = req.body.index;
+        console.log('req.body: ', req.body);
+
+        const payload = jwt.verify(authorization, process.env.SECRET);
+        const user = await usercollection.findOneAndUpdate({email: payload.email}, {$pull: {graphPresets: {index: index}}});
+
+        res.status(200).send({
+            message: "Preset removed.",
+        });
+    }
+    catch (error){
+        console.log('error: ', error);
+        res.status(500).send({
+            message: "Error Accessing Database",
+            error: error,
+        });
     }
 })
 
