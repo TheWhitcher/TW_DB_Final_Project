@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "blob": "^0.1.0",
     "bootstrap": "^5.2.3",
     "file-saver": "^2.0.5",
+    "filereader": "^0.10.3",
     "jquery": "^3.6.4",
     "jwt-decode": "^3.1.2",
     "nanoid": "^4.0.2",
