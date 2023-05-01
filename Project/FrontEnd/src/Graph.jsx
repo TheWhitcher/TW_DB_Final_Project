@@ -249,29 +249,26 @@ function Graph() {
     }
   }
 
-  // TODO: Maybe working, graph doesnt work for testing.
   // Download the generated graph image.
   const downloadGraph = () => {
-    // const url = graph;
-    // filename = "graph"
-    // fetch(url)
-    // .then(response => response.blob())
-    // .then(blob => { saveAs(blob, filename);
-    // });
+    const url = graph;
+    const filename = graphPreset.title;
+    fetch(url).then(response => response.blob()).then(blob => { saveAs(blob, filename);
+    });
   }
 
   return (
     <>
       {presetLoaded? (
         <div className="App">
-            <div className="container">
-              <div className="row text-start">
-                <div className="col-3 ps-4 pt-4">
-                    <button className='btn btn-primary btn-sm mx-4' onClick={homeRoute}>Home</button>
-                    <button className='btn btn-danger btn-sm' onClick={logoutRoute}>Logout</button>
-                </div>
+          <div className="container">
+            <div className="row text-start">
+              <div className="col-3 ps-4 pt-4">
+                <button className='btn btn-primary btn-sm mx-4' onClick={homeRoute}>Home</button>
+                <button className='btn btn-danger btn-sm' onClick={logoutRoute}>Logout</button>
+              </div>
 
-                <div className="col-3">
+              <div className="col-3">
                   <label htmlFor="gasType">Gas Type</label>
                   <div className="input-group mb-3">
                     <select className="form-select" id="GasTypeSelect" defaultValue={graphPreset.type} onChange={(event) => handleInputChange('gasType', event.target.value)}>
@@ -280,9 +277,9 @@ function Graph() {
                       <option value="N2O">Nitrous Oxide</option>
                     </select>
                   </div>
-                </div>
+              </div>
                 
-                <div className="col-3">
+              <div className="col-3">
                   <label htmlFor="gasType">Count</label>
                   <div className="input-group mb-3">
                     <select className="form-select" id="inputGroupSelect01" defaultValue={graphPreset.count} onChange={(event) => handleInputChange('count', event.target.value)}>
@@ -291,55 +288,55 @@ function Graph() {
                       <option value="Per Dollar">Per $ of GDP</option>
                     </select>
                   </div>
-                </div>
-
-                <div className="col-3 px-0 pt-4">
-                  <input className="form-check-input me-3" disabled={graphPreset.count !== "Per Country"}type="checkbox" defaultChecked={graphPreset.world} id="relativeCheckbox" onChange={(event) => handleInputChange('r2worldTotal', event.target.checked)}/>
-                  <label className="form-check-label fs-6" htmlFor="worldTotal">Relative to world total</label>
-                </div>
               </div>
 
-              <div className="row">
-                <div className="col-4 p-0">
-                  <div className="input-group input-group-sm mb-3">
-                    <span className="input-group-text" id="searchCountry">&#128269;</span>
-                    <input type="text" className="form-control" placeholder="Search a Country" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(event) => handleInputChange('search', event.target.value)}/>
-                  </div>
+              <div className="col-3 px-0 pt-4">
+                <input className="form-check-input me-3" disabled={graphPreset.count !== "Per Country"}type="checkbox" defaultChecked={graphPreset.world} id="relativeCheckbox" onChange={(event) => handleInputChange('r2worldTotal', event.target.checked)}/>
+                <label className="form-check-label fs-6" htmlFor="worldTotal">Relative to world total</label>
+              </div>
+            </div>
 
-                  <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
-                  {graphPreset.countries.map((data, index) => { 
-                        return <ListItem key={index} index={data.index} country={data.country} id={data.id} checked={data.checked} handleCountryList={handleCountryList}/>
-                    })}
-                  </ul>
+            <div className="row">
+              <div className="col-4 p-0">
+                <div className="input-group input-group-sm mb-3">
+                  <span className="input-group-text" id="searchCountry">&#128269;</span>
+                  <input type="text" className="form-control" placeholder="Search a Country" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(event) => handleInputChange('search', event.target.value)}/>
                 </div>
 
-                <div className="col-8">
-                  <div className="container">
-                    <div className="row">
-                      <button className="btn btn-success" onClick={generateGraph}>Generate Graph</button>
-                    </div>
+                <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
+                  {graphPreset.countries.map((data, index) => { 
+                    return <ListItem key={index} index={data.index} country={data.country} id={data.id} checked={data.checked} handleCountryList={handleCountryList}/>
+                  })}
+                </ul>
+              </div>
+
+              <div className="col-8">
+                <div className="container">
+                  <div className="row">
+                    <button className="btn btn-success" onClick={generateGraph}>Generate Graph</button>
+                  </div>
                     
-                    <div className="row">
-                      {imageLoaded?(
-                      <img className="m-2" src={graph} alt="Graph" id="GraphImage" style={{ width: '600px', }}/>
+                  <div className="row">
+                    {imageLoaded?(
+                      <img className="my-2" src={graph} alt="Graph" id="GraphImage" style={{ width: '600px', }}/>
                       ) : (<div>Loading...</div>)}
+                  </div>
+
+                  <div className="row">
+                    <div className="col-6">
+                      <button className='btn btn-primary' data-bs-toggle="modal" data-bs-target="#staticBackdrop">Save</button> 
                     </div>
 
-                    <div className="row">
-                      <div className="col-6">
-                        <button className='btn btn-primary' data-bs-toggle="modal" data-bs-target="#staticBackdrop">Save</button> 
-                      </div>
-
-                      <div className="col-6">
-                        <button className='btn btn-primary' onClick={downloadGraph}>Download</button>
-                      </div>
+                    <div className="col-6">
+                      <button className='btn btn-primary' onClick={downloadGraph}>Download</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+          <div className="modal fade text-black" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">

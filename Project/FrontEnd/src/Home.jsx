@@ -61,22 +61,24 @@ function Home() {
     }
 
     // Make a delete request.
-    async function deletePreset(i){
-        const index = {index: i};
+    async function deletePreset(){
+        const id = localStorage.getItem("presetID");
+        const index = {index: id};
 
         const url = "http://localhost:8080/user/deletePreset"
         const options = {
-        method: 'DELETE',
-        headers: {
-            'authorization': localStorage.getItem("token"),
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(index)
+            method: 'DELETE',
+            headers: {
+                'authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(index)
         }
 
         const response = await fetch(url, options);
         if (response.ok){
-            const newData = graphData.filter((data) => data.index != i)
+            document.getElementById("modalClose").click();
+            const newData = graphData.filter((data) => data.index != id)
             setGraphData(newData);
         }
     }
@@ -85,6 +87,10 @@ function Home() {
     async function loadPreset(i){
         localStorage.setItem("presetID", i);
         navigate("/Graph");
+    }
+
+    function deleteTracker(index){
+        localStorage.setItem("presetID", index);
     }
 
     return (
@@ -101,8 +107,24 @@ function Home() {
             <div className="container border p-0 bg-secondary">
                 <Header title="Title" type="Type" count="Count" style="fw-bold bg-dark"/>
                 {graphData.map((data, index) => { 
-                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count} deletePreset={deletePreset} loadPreset={loadPreset}/>
+                    return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count} deleteTracker={deleteTracker} loadPreset={loadPreset}/>
                 })}
+            </div>
+
+            <div className="modal fade text-black" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="modalLabel">Are you sure you want to delete this preset?</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                        <div className="modal-body mb-3">
+                            <button type="button" className="btn btn-success btn-lg me-5" onClick={deletePreset}>Delete</button>
+                            <button type="button" className="btn btn-danger btn-lg" id="modalClose" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

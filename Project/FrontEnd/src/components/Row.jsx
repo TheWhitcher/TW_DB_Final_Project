@@ -11,7 +11,7 @@ function Row(props) {
           <div className="col-3 btn-group btn-group-sm" role="group" aria-label="Basic example">
             <button className='btn btn-primary' onClick={() => props.loadPreset(props.index)}>Load</button>
               
-              <button className='btn btn-danger' onClick={() => props.deletePreset(props.index)}>Delete</button>
+              <button className='btn btn-danger' data-bs-toggle="modal" data-bs-target="#staticBackdrop" onClick={() => props.deleteTracker(props.index)}>Delete</button>
           </div>
         </div>
       </div>
