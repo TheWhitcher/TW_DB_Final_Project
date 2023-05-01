@@ -10,8 +10,7 @@ import ListItem from './components/ListItem.jsx';
 function Graph() {
   
   const [presetLoaded, setPresetLoaded] = useState(false);
-  const [username, setUsername] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(true);
   const [form, setform] = useState({});
   const [graph, setGraph] = useState({});
   const [graphPreset, setPreset] = useState({index: "default",
@@ -56,8 +55,7 @@ function Graph() {
     try{
       const decodedToken = jwt_decode(token);
       loadPreset();
-      setUsername(decodedToken.username);
-      setIsAdmin(decodedToken.isAdmin);
+      generateGraph();
     } 
     catch(err){
       console.error(err);
@@ -91,8 +89,11 @@ function Graph() {
         const preset = jsonResponse.graphPresets.splice(index,1);
         
         setPreset(preset[0]);
-        setPresetLoaded(true);
       }
+      setPresetLoaded(true);
+    }
+    else{
+      console.log("Failed to load data");
     }
   }
 
@@ -170,13 +171,12 @@ function Graph() {
   const homeRoute = () =>{
     navigate("../Home");
   }
-
-  // TODO: Currently not working
+  
+  // TODO: Send preset data
   // Make a request to run a python script that will generate a graph as an image.
   const generateGraph = async (e) =>{
-    e.preventDefault();
+    setImageLoaded(false);
 
-    // TODO: create dynamic url link
     const url = 'http://localhost:8080/graph/generate';
     const options = {
       method: 'GET',
@@ -187,12 +187,18 @@ function Graph() {
     
     try{
       const response = await fetch(url, options);
-      const jsonResponse = await response.json();
 
-      setGraph(jsonResponse.image); 
-      console.log('jsonResponse.image: ', jsonResponse.image);
       if (response.status === 200){
-        console.log("Success");
+        const blob = await response.blob();
+        const reader = new FileReader();
+
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          setGraph(base64data);
+          console.log("Success");
+        };
+        setImageLoaded(true);
       }
       else{
         console.log("Generate Graph request Failed")
@@ -314,7 +320,9 @@ function Graph() {
                     </div>
                     
                     <div className="row">
-                      <img src={graph} alt="Graph" id="GraphImage" style={{ width: '600px', }}/>
+                      {imageLoaded?(
+                      <img className="m-2" src={graph} alt="Graph" id="GraphImage" style={{ width: '600px', }}/>
+                      ) : (<div>Loading...</div>)}
                     </div>
 
                     <div className="row">

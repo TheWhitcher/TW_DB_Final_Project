@@ -7,12 +7,11 @@ import Header from './components/Header.jsx';
 
 function Home() {
     const [email, setUsername] = useState(null);
-    const [isAdmin, setIsAdmin] = useState(false);
     const [graphData, setGraphData] = useState([]);
     const navigate = useNavigate(); 
 
     
-    // on component load -> check auth
+    // Verify access token, and set up page.
     useEffect( () => {
         // verify auth
         const token = localStorage.getItem('token');
@@ -25,7 +24,6 @@ function Home() {
             const decodedToken = jwt_decode(token);
             fetchPresets();
             setUsername(decodedToken.email)
-            setIsAdmin(decodedToken.isAdmin)
         } catch(err){
             console.error(err);
             navigate('/login');
@@ -50,12 +48,13 @@ function Home() {
         setGraphData(jsonResponse.graphPresets)
     }
 
-    // Remove localstorage token and return user to login screen
+    // Remove localstorage token and return user to login screen.
     const logoutRoute = () =>{ 
         localStorage.removeItem("token");
         navigate("/login"); 
     }
 
+    // Navigate to Graph page with default preset.
     const graphRoute = () =>{
         localStorage.setItem("presetID", "default");
         navigate("/Graph");
@@ -94,13 +93,13 @@ function Home() {
             <p>You are logged in!</p>
 
             <div>
-                <button className='btn btn-primary btn-sm mx-1' onClick={graphRoute}>Graphs</button>
+                <button className='btn btn-primary btn-sm mx-1' onClick={graphRoute}>Explore</button>
                 <button className='btn btn-danger btn-sm mx-1' onClick={logoutRoute}>Logout</button>
             </div>
             <h3 className="text-start mt-2">Your Saved Graphs</h3>
 
-            <div className="container border p-0 bg-light">
-                <Header title="Title" type="Type" count="Count" style="fw-bold text-bg-secondary"/>
+            <div className="container border p-0 bg-secondary">
+                <Header title="Title" type="Type" count="Count" style="fw-bold bg-dark"/>
                 {graphData.map((data, index) => { 
                     return <Row key={index} index={data.index} title={data.title} type={data.type} count={data.count} deletePreset={deletePreset} loadPreset={loadPreset}/>
                 })}
