@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
-// Validate Password strength
+// Password requirement tests
 function validatePassword(password){
     const lengthRegex = /.{8}.*/;
     const lengthTest = lengthRegex.test(password);
@@ -39,15 +39,16 @@ function validatePassword(password){
 
 // Register a new user
 function Register() {
-
     const [form, setform] = useState({});
     const navigate = useNavigate(); 
 
+    // Handles change of input in pages components.
     function handleInputChange(key, newValue){
         form[key] = newValue;
         setform(form);
         }
 
+    // Handle submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -67,6 +68,7 @@ function Register() {
         return
     }
     
+    // Password validation.
     const results = validatePassword(form.password)
 
     if(!results.length){

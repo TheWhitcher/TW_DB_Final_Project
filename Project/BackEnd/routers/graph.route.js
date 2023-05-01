@@ -4,8 +4,6 @@ const router = express.Router()
 const { client } = require('../database/database');
 const { spawn } = require('child_process');
 const path = require('path');
-const fs = require('fs');
-const Blob = require('blob');
 const jwt = require('jsonwebtoken');
 
 const database = client.db("emission_users");
@@ -14,7 +12,7 @@ const usercollection = database.collection("users");
 // Executes a python script
 const GenerateGraph = () => {
     return new Promise((resolve, reject) => {
-
+        
         const originalDIR = process.cwd();
         const scriptDIR = path.join(__dirname, "..", "..", "Data");
         
@@ -41,31 +39,22 @@ const GenerateGraph = () => {
     })
 }
 
+// TODO: Make Dynamic by adding arguments.
 // Generate Graph
 router.get('/generate', async function(req,res){
-    // TODO: Make Dynamic by adding arguments.
     try{
         const result = await GenerateGraph();
         const imagePath = path.join(__dirname, "..", "..", "Data", "images", "graph.png");
-
-        const pngBuffer = fs.readFileSync(imagePath)
-
-        const pngBlob = new blob([pngBuffer], {type: 'image/png'})
-        // fs.readFile(imagePath, function(err, data) {
-        //     if(err) {
-        //         console.log('err: ', err);
-        //         return;
-        //     }
-
-        //     const blob = Blob([data], {type: 'image/png'});
-        //     const dataURL = blobUtil.createObjectURL(blob);
-
-        //     res.status(200).send({
-        //         message: "Generate Graph succesfull.",
-        //         image: dataURL
-        //     });
-        //     console.log("Python Success");
-        // })
+        
+        if(result){
+            res.setHeader('Content-Type', "image/png");
+            res.setHeader('Content-Disposition', 'attachment; filename=graph');
+            
+            res.status(200).sendFile(imagePath);
+        }
+        else{
+            console.log("Python Script failed")
+        }
     }
     catch (error){
 

@@ -8,15 +8,18 @@ function Login() {
     const [form, setform] = useState({});
     const navigate = useNavigate(); 
 
+    // WIP alert
     const passAlert = () =>{
-        alert("SHAAAAAAAAAAAMMMMMEEEEE!!!")
+        alert("Feature not yet available")
     }
     
+    // Handle input change in page components.
     function handleInputChange(key, newValue){
         form[key] = newValue;
         setform(form);
     }
 
+    // Handles the submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -52,7 +55,6 @@ function Login() {
         else{
             toast.error("Login failed", toastOptions);
         }
-
     }
 
   return (
