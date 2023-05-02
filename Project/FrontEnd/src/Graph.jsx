@@ -56,7 +56,6 @@ function Graph() {
     try{
       const decodedToken = jwt_decode(token);
       loadPreset();
-      generateGraph();
     } 
     catch(err){
       console.error(err);
@@ -65,9 +64,10 @@ function Graph() {
     }
   },[]);
 
-  // Load the Dropdowns
+  // Loading components
   useEffect(() => {
     if(presetLoaded){
+      generateGraph();
       handleDropdown();
     }
   },[presetLoaded]);
