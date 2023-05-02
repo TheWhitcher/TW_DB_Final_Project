@@ -10,16 +10,25 @@ const database = client.db("emission_users");
 const usercollection = database.collection("users");
 
 // Executes a python script
-const GenerateGraph = () => {
+const GenerateGraph = (preset) => {
     return new Promise((resolve, reject) => {
+        const countries = preset.countries.join(',');
+        const plotType = PlotType(preset.type, preset.count, preset.world)
+        console.log('countries: ', countries);
+        console.log('plotType: ', plotType);
+        
+        if(!plotType){
+            reject(false);
+            return false;
+        }
         
         const originalDIR = process.cwd();
         const scriptDIR = path.join(__dirname, "..", "..", "Data");
         
         process.chdir(scriptDIR);
         
-        const pythonScript = path.join(scriptDIR, 'annualGlobalC02.py');
-        const python = spawn('python', [pythonScript]);
+        const pythonScript = path.join(scriptDIR, 'plot_gen.py');
+        const python = spawn('python', [pythonScript, countries, plotType]);
         
         python.on('exit', (code) => {
             if(code === 0){
@@ -39,11 +48,50 @@ const GenerateGraph = () => {
     })
 }
 
-// TODO: Make Dynamic by adding arguments.
-// Generate Graph
-router.get('/generate', async function(req,res){
+// Converts preset info into plot types
+function PlotType(type, count, world){
+    if(count === "Per Dollar"){
+        return "Carbon emission intensity of economies";
+    }
+    
+    if(world){
+        return "CO2 Global Share";
+    }
+
+    if(type === "N2O"){
+        if(count === "Per Country"){
+            return "Annual nitrous oxide emissions";
+        }
+        else if(count === "Per Capita"){
+            return "Nitrous oxide per population";
+        }
+    }
+    else if(type === "Methane"){
+        if(count === "Per Country"){
+            return "Annual methane emissions";
+        }
+        else if(count === "Per Capita"){
+            return "Methane per population";
+        }
+    }
+    else if(type === "CO2"){
+        if(count === "Per Country"){
+            return "Annual CO2 emissions";
+        }
+        else if(count === "Per Capita"){
+            return "Per Capita CO2";
+        }
+    }
+
+    return false;
+}
+
+// Generate a Graph
+router.post('/generate', async function(req,res){
+    const preset = req.body;
+
     try{
-        const result = await GenerateGraph();
+        const result = await GenerateGraph(preset);
         const imagePath = path.join(__dirname, "..", "..", "Data", "images", "graph.png");
         
         if(result){
