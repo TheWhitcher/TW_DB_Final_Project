@@ -3,28 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
+import constants from './constansts';
+
 
 // Password requirement tests
 function validatePassword(password){
     const lengthRegex = /.{8}.*/;
     const lengthTest = lengthRegex.test(password);
-    console.log('lengthTest: ', lengthTest);
 
     const upperRegex = /[A-Z]/;
     const upperTest = upperRegex.test(password)
-    console.log('upperTest: ', upperTest);
 
     const lowerRegex = /[a-z]/;
     const lowerTest = lowerRegex.test(password)
-    console.log('lowerTest: ', lowerTest);
 
     const numbersRegex = /\d/;
     const numbersTest = numbersRegex.test(password)
-    console.log('numbersTest: ', numbersTest);
     
     const specialRegex = /[!#$%&'*+\/=?^_`.{|}~-]/;
     const specialTest = specialRegex.test(password);
-    console.log('specialTest: ', specialTest);
 
     const results = {
         length: lengthTest,
@@ -92,7 +89,7 @@ function Register() {
         return
     }
 
-    const loginUrl = 'http://localhost:8080/user/register';
+    const loginUrl = constants.BACKEND_URL + '/user/register';
     const options = {
         method: 'POST',
         headers: {

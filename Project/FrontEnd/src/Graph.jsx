@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode';
 import './App.css'
 import { nanoid } from 'nanoid';
 import ListItem from './components/ListItem.jsx';
+import constants from './constansts';
 
 
 function Graph() {
@@ -101,7 +102,7 @@ function Graph() {
   // Set preset values
   async function loadPreset(){
     const token = localStorage.getItem('token');
-    const url = 'http://localhost:8080/user/graphs';
+    const url = constants.BACKEND_URL + '/user/graphs';
     const options = {
       method: 'GET',
       headers: {
@@ -215,7 +216,7 @@ function Graph() {
       countries: countries,
     }
     
-    const url = 'http://localhost:8080/graph/generate';
+    const url = constants.BACKEND_URL + '/graph/generate';
     const options = {
       method: 'POST',
       body: JSON.stringify(preset),
@@ -251,7 +252,7 @@ function Graph() {
   const saveGraph = async (e) => {
     const input = document.getElementById("modalInput");
     graphPreset.index = nanoid();
-    const url = 'http://localhost:8080/graph/save';
+    const url = constants.BACKEND_URL + '/graph/save';
     const options = {
       method: 'POST',
       headers: {
@@ -268,7 +269,6 @@ function Graph() {
         if (response.status === 200){
           input.value = "";
           document.getElementById("modalClose").click();
-          console.log("Success");
         }
         else{
           console.log("Save request Failed")

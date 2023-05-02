@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './App.css'
+import './App.css';
+import constants from './constansts';
 
 function Login() {
     const [form, setform] = useState({});
@@ -23,7 +24,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const loginUrl = 'http://localhost:8080/user/login';
+        const loginUrl = constants.BACKEND_URL + '/user/login';
         const options = {
             method: 'POST',
             headers: {
