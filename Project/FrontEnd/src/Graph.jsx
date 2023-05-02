@@ -11,7 +11,6 @@ function Graph() {
   
   const [presetLoaded, setPresetLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [dropdownLoaded, setDropdownLoaded] = useState(false);
   const [form, setform] = useState({});
   const [graph, setGraph] = useState({});
   const [graphPreset, setPreset] = useState({index: "default",
@@ -90,6 +89,7 @@ function Graph() {
     }
   }
 
+  // TODO: Localhost URL
   // Set preset values
   async function loadPreset(){
     const token = localStorage.getItem('token');
@@ -122,8 +122,6 @@ function Graph() {
       console.log("Failed to load data");
     }
   }
-
-
 
   // Handles change of input for most components
   function handleInputChange(key, newValue){
@@ -201,7 +199,8 @@ function Graph() {
   const homeRoute = () =>{
     navigate("../Home");
   }
-
+  
+  // TODO: Localhost URL
   // Make a request to run a python script that will generate a graph as an image.
   const generateGraph = async (e) =>{
     setImageLoaded(false);
@@ -219,34 +218,35 @@ function Graph() {
       countries: countries,
     }
     
+    console.log('preset: ', preset);
     const url = 'http://localhost:8080/graph/generate';
     const options = {
       method: 'POST',
+      body: JSON.stringify(preset),
       headers: {
         authorization: localStorage.getItem("token"),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(preset),
     }
     
     try{
       const response = await fetch(url, options);
 
       if (response.status === 200){
-        const blob = await response.blob();
-        const reader = new FileReader();
-
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          setGraph(base64data);
-          console.log("Success");
-        };
+        const imgData = await response.arrayBuffer();
+        const blob = new Blob([imgData], { type: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        
+        console.log('imgData: ', imgData);
+        console.log('blob: ', blob);
+        console.log('url: ', url);
+        
+        setGraph(url);
+        
         setImageLoaded(true);
       }
       else{
         console.log("Generate Graph request Failed")
-        console.log('error: ', error);
       }
     }
     catch (error){
@@ -255,6 +255,7 @@ function Graph() {
     }
   }
 
+  // TODO: Localhost URL
   // Saves current graph settings to the database
   const saveGraph = async (e) => {
     const input = document.getElementById("modalInput");
@@ -295,10 +296,9 @@ function Graph() {
 
   // Download the generated graph image.
   const downloadGraph = () => {
-    const url = graph;
+    const url = document.getElementById("GraphImage").src;
     const filename = graphPreset.title;
-    fetch(url).then(response => response.blob()).then(blob => { saveAs(blob, filename);
-    });
+    saveAs(url, filename);
   }
 
   return (

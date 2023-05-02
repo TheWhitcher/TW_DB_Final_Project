@@ -5,6 +5,7 @@ const { client } = require('../database/database');
 const { spawn } = require('child_process');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const database = client.db("emission_users");
 const usercollection = database.collection("users");
@@ -14,8 +15,6 @@ const GenerateGraph = (preset) => {
     return new Promise((resolve, reject) => {
         const countries = preset.countries.join(',');
         const plotType = PlotType(preset.type, preset.count, preset.world)
-        console.log('countries: ', countries);
-        console.log('plotType: ', plotType);
         
         if(!plotType){
             reject(false);
@@ -29,20 +28,24 @@ const GenerateGraph = (preset) => {
         
         const pythonScript = path.join(scriptDIR, 'plot_gen.py');
         const python = spawn('python', [pythonScript, countries, plotType]);
-        
+
+        let imgData = Buffer.alloc(0);
+        python.stdout.on('data', (chunk) => {
+            imgData = Buffer.concat([imgData, chunk]);
+        });
+
         python.on('exit', (code) => {
             if(code === 0){
-                
                 process.chdir(originalDIR);
-                resolve (true);
+                resolve (imgData);
             }
             else{
                 process.chdir(originalDIR);
                 python.stderr.on('data', (data) => {
                     console.error(`stderr: ${data}`);
-                    reject(false);
+                    reject(new Error(`Failed to generate graph: ${data}`));
                 })
-                return false;
+                console.log('Python process exited with code: ', code);
             }
         })
     })
@@ -91,18 +94,12 @@ router.post('/generate', async function(req,res){
     const preset = req.body;
 
     try{
-        const result = await GenerateGraph(preset);
-        const imagePath = path.join(__dirname, "..", "..", "Data", "images", "graph.png");
+        const imgData = await GenerateGraph(preset);
         
-        if(result){
-            res.setHeader('Content-Type', "image/png");
-            res.setHeader('Content-Disposition', 'attachment; filename=graph');
-            
-            res.status(200).sendFile(imagePath);
-        }
-        else{
-            console.log("Python Script failed")
-        }
+        res.setHeader('Content-Type', "image/png");
+        res.setHeader('Content-Disposition', 'inline; filename="graph.png"');
+        
+        res.status(200).send(imgData);
     }
     catch (error){
 
@@ -111,7 +108,6 @@ router.post('/generate', async function(req,res){
             error: error,
         });
 
-        console.log("Python Failed");
         console.log('error: ', error);
     }
 })
