@@ -15,10 +15,6 @@ app.use(cors());
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
 
-// Server static files
-const dataPath = path.join( __dirname, 'graphs')
-app.use('/graphs', express.static(dataPath))
-
 // Health Route
 app.get('/', function(req, res) {
     res.status(200).send('Server Healthy')

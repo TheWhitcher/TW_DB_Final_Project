@@ -10,7 +10,8 @@ import ListItem from './components/ListItem.jsx';
 function Graph() {
   
   const [presetLoaded, setPresetLoaded] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [dropdownLoaded, setDropdownLoaded] = useState(false);
   const [form, setform] = useState({});
   const [graph, setGraph] = useState({});
   const [graphPreset, setPreset] = useState({index: "default",
@@ -42,7 +43,7 @@ function Graph() {
     ]})
   const navigate = useNavigate();
 
-  // on component load -> check auth
+  // Load Preset and Generate graph.
   useEffect(() => {
     // verify auth
     const token = localStorage.getItem('token');
@@ -62,7 +63,32 @@ function Graph() {
       navigate('/login');
       return
     }
-  },[])
+  },[]);
+
+  // Load the Dropdowns
+  useEffect(() => {
+    if(presetLoaded){
+      handleDropdown();
+    }
+  },[presetLoaded]);
+
+  // Handles dropdown menu changes
+  function handleDropdown(){
+    const dollarOption = document.getElementById("dollarOption");
+    const countDropdown = document.getElementById("CountDropDown");
+
+    if(graphPreset.type === "Methane" || graphPreset.type === "N2O"){
+      dollarOption.style.display = "none";
+
+      if(graphPreset.count === "Per Dollar"){
+        countDropdown.value = "Per Country";
+        graphPreset.count = "Per Country";
+      }
+    }
+    else{
+      dollarOption.style.display = "";
+    }
+  }
 
   // Set preset values
   async function loadPreset(){
@@ -97,7 +123,9 @@ function Graph() {
     }
   }
 
-  // Handels change of input for most components
+
+
+  // Handles change of input for most components
   function handleInputChange(key, newValue){
     form[key] = newValue;
 
@@ -121,8 +149,9 @@ function Graph() {
 
     // Enable/Disable Relative to world checkbox
     if (key === "count"){
-       const checkbox = document.getElementById("relativeCheckbox")
+        const checkbox = document.getElementById("relativeCheckbox");
         graphPreset.count = newValue
+
         if(newValue === "Per Country"){
           checkbox.disabled = false;
         }
@@ -133,20 +162,21 @@ function Graph() {
         }
       }
       
-      if (key === "gasType"){
-        graphPreset.type = newValue;
-      }
-      
-      if (key === "r2worldTotal"){
-        graphPreset.world = newValue;
-      }
-
-      if (key == "graphName"){
-        graphPreset.title = newValue
-      }
-
-      setPreset(graphPreset);
+    if (key === "gasType"){
+      graphPreset.type = newValue;
+      handleDropdown();
     }
+    
+    if (key === "r2worldTotal"){
+      graphPreset.world = newValue;
+    }
+
+    if (key == "graphName"){
+      graphPreset.title = newValue
+    }
+
+    setPreset(graphPreset);
+  }
   
   // Handle checked countries
   function handleCountryList(_id, _checked){
@@ -171,18 +201,32 @@ function Graph() {
   const homeRoute = () =>{
     navigate("../Home");
   }
-  
-  // TODO: Send preset data
+
   // Make a request to run a python script that will generate a graph as an image.
   const generateGraph = async (e) =>{
     setImageLoaded(false);
+    let countries = [];
+    graphPreset.countries.forEach(function (object) {
+      if(object.checked){
+        countries.push(object.country);
+      }
+    });
 
+    const preset = {
+      type: graphPreset.type,
+      count: graphPreset.count,
+      world: graphPreset.world,
+      countries: countries,
+    }
+    
     const url = 'http://localhost:8080/graph/generate';
     const options = {
-      method: 'GET',
+      method: 'POST',
       headers: {
         authorization: localStorage.getItem("token"),
-      }
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(preset),
     }
     
     try{
@@ -271,21 +315,21 @@ function Graph() {
               <div className="col-3">
                   <label htmlFor="gasType">Gas Type</label>
                   <div className="input-group mb-3">
-                    <select className="form-select" id="GasTypeSelect" defaultValue={graphPreset.type} onChange={(event) => handleInputChange('gasType', event.target.value)}>
-                      <option value="CO2">CO&#178;</option>
-                      <option value="Methane">Methane</option>
-                      <option value="N2O">Nitrous Oxide</option>
+                    <select className="form-select" id="TypeDropDown" defaultValue={graphPreset.type} onChange={(event) => handleInputChange('gasType', event.target.value)}>
+                      <option id="co2Option" value="CO2">CO&#178;</option>
+                      <option id="methaneOption" value="Methane">Methane</option>
+                      <option id="n2oOption" value="N2O">Nitrous Oxide</option>
                     </select>
                   </div>
               </div>
                 
               <div className="col-3">
-                  <label htmlFor="gasType">Count</label>
+                <label htmlFor="gasType">Count</label>
                   <div className="input-group mb-3">
-                    <select className="form-select" id="inputGroupSelect01" defaultValue={graphPreset.count} onChange={(event) => handleInputChange('count', event.target.value)}>
-                      <option value="Per Country">Per Country</option>
-                      <option value="Per Capita">Per Capita</option>
-                      <option value="Per Dollar">Per $ of GDP</option>
+                    <select className="form-select" id="CountDropDown" defaultValue={graphPreset.count} onChange={(event) => handleInputChange('count', event.target.value)}>
+                      <option id="countryOption" value="Per Country">Per Country</option>
+                      <option id="capitaOption" value="Per Capita">Per Capita</option>
+                      <option id="dollarOption" value="Per Dollar">Per $ of GDP</option>
                     </select>
                   </div>
               </div>
@@ -306,7 +350,7 @@ function Graph() {
                 <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
                   {graphPreset.countries.map((data, index) => { 
                     return <ListItem key={index} index={data.index} country={data.country} id={data.id} checked={data.checked} handleCountryList={handleCountryList}/>
-                  })}
+                  })};
                 </ul>
               </div>
 

@@ -2,6 +2,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import sys
 
 # Import the data
 data = 'prototype_csv.csv'
@@ -21,8 +22,11 @@ plot_types = ['Annual CO2 emissions', 'Per Capita CO2', 'Carbon emission intensi
 
 # Define the function that generates the plot
 def plot_gen(countries, plot_type):
+    print(countries)
+    print(plot_type)
     # Convert user input string to a list of countries
-    countries = countries.split(", ")
+    #countries = countries.split(',')
+    
     # Check if all input countries are valid G20 countries
     invalid_countries = [c for c in countries if c not in g20_countries]
     if invalid_countries:
@@ -40,11 +44,18 @@ def plot_gen(countries, plot_type):
     fig, axs = plt.subplots()
     sns.lineplot(data=df_plot, x="Year", y=plot_type, hue="Entity", ax=axs)
     plt.title(plot_type)
-    plt.show()
+    plt.savefig("./images/graph")
+    print("File Saved")
+    #plt.show()
+
+# Country arguments received.
+countries = sys.argv[1].split(',')
+# Plot type argument received.
+plot_type = sys.argv[2]
 
 # Ask the user to enter the countries to be displayed
-countries = input("Enter the countries to be displayed (separate by comma if multiple): ")
+#countries = input("Enter the countries to be displayed (separate by comma if multiple): ")
 # Ask the user to enter the type of plot to be displayed
-plot_type = input("Enter the type of plot to be displayed: ")
+#plot_type = input("Enter the type of plot to be displayed: ")
 # Generate the plot
 plot_gen(countries, plot_type)
