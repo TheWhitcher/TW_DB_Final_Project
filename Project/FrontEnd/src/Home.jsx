@@ -32,7 +32,6 @@ function Home() {
 
     },[]);
 
-    // TODO: Localhost URL
     // Get user presets form the database
     const fetchPresets = async (e) => {
         const token = localStorage.getItem('token');
@@ -61,7 +60,6 @@ function Home() {
         navigate("/Graph");
     }
 
-    // TODO: Localhost url
     // Make a delete request.
     async function deletePreset(){
         const id = localStorage.getItem("presetID");

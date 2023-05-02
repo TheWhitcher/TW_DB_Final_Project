@@ -75,6 +75,15 @@ function Graph() {
   function handleDropdown(){
     const dollarOption = document.getElementById("dollarOption");
     const countDropdown = document.getElementById("CountDropDown");
+    const checkbox = document.getElementById("relativeCheckbox");
+
+    if ((graphPreset.type === "CO2" && graphPreset.count === "Per Country")){
+      checkbox.disabled = false;
+    }
+    else{
+      checkbox.checked = false;
+      checkbox.disabled = true;
+    }
 
     if(graphPreset.type === "Methane" || graphPreset.type === "N2O"){
       dollarOption.style.display = "none";
@@ -89,7 +98,6 @@ function Graph() {
     }
   }
 
-  // TODO: Localhost URL
   // Set preset values
   async function loadPreset(){
     const token = localStorage.getItem('token');
@@ -145,20 +153,10 @@ function Graph() {
       }
     }
 
-    // Enable/Disable Relative to world checkbox
     if (key === "count"){
-        const checkbox = document.getElementById("relativeCheckbox");
-        graphPreset.count = newValue
-
-        if(newValue === "Per Country"){
-          checkbox.disabled = false;
-        }
-        else{
-          checkbox.checked = false;
-          graphPreset.world = false;
-          checkbox.disabled = true;
-        }
-      }
+      graphPreset.count = newValue
+      handleDropdown();
+    }
       
     if (key === "gasType"){
       graphPreset.type = newValue;
@@ -200,7 +198,6 @@ function Graph() {
     navigate("../Home");
   }
   
-  // TODO: Localhost URL
   // Make a request to run a python script that will generate a graph as an image.
   const generateGraph = async (e) =>{
     setImageLoaded(false);
@@ -218,7 +215,6 @@ function Graph() {
       countries: countries,
     }
     
-    console.log('preset: ', preset);
     const url = 'http://localhost:8080/graph/generate';
     const options = {
       method: 'POST',
@@ -237,10 +233,6 @@ function Graph() {
         const blob = new Blob([imgData], { type: 'image/png' });
         const url = URL.createObjectURL(blob);
         
-        console.log('imgData: ', imgData);
-        console.log('blob: ', blob);
-        console.log('url: ', url);
-        
         setGraph(url);
         
         setImageLoaded(true);
@@ -255,7 +247,6 @@ function Graph() {
     }
   }
 
-  // TODO: Localhost URL
   // Saves current graph settings to the database
   const saveGraph = async (e) => {
     const input = document.getElementById("modalInput");

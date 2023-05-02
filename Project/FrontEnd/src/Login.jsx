@@ -19,7 +19,6 @@ function Login() {
         setform(form);
     }
 
-    // TODO: Localhost url
     // Handles the submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();

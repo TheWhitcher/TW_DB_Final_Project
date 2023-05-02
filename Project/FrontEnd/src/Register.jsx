@@ -48,7 +48,6 @@ function Register() {
         setform(form);
         }
 
-    // TODO: Localhost url
     // Handle submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();
