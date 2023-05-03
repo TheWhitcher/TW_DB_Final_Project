@@ -41,6 +41,7 @@ function Graph() {
       {id: "BRT", checked: true, country: "United Kingdom"},
       {id: "USA", checked: true, country: "United States"},
     ]})
+    
   const navigate = useNavigate();
 
   // Load Preset and Generate graph.
@@ -341,7 +342,7 @@ function Graph() {
                 <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
                   {graphPreset.countries.map((data, index) => { 
                     return <ListItem key={index} index={data.index} country={data.country} id={data.id} checked={data.checked} handleCountryList={handleCountryList}/>
-                  })};
+                  })}
                 </ul>
               </div>
 

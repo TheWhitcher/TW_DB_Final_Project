@@ -34,6 +34,18 @@ function validatePassword(password){
     return results
 }
 
+// Validate the date of birth entered is earlier than todays date
+function birthValidation(dob){
+    const date = new Date(dob);
+    const today = new Date();
+
+    if(date > today){
+        return false;
+    }
+
+    return true;
+}
+
 // Register a new user
 function Register() {
     const [form, setform] = useState({});
@@ -86,6 +98,11 @@ function Register() {
     }
     else if(!results.special){
         toast.error("Password must contain 1 special character.", toastOptions)
+        return
+    }
+
+    if(!birthValidation(form.dateOfBirth)){
+        toast.error("Must be born to register.", toastOptions)
         return
     }
 
