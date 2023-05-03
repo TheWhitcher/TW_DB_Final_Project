@@ -7,6 +7,7 @@ import Login from './Login'
 import Register from './Register'
 import Home from './Home'
 import Graph from './Graph'
+import constants from './constansts';
 // Import bootstrap
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'

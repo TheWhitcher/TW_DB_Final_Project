@@ -4,6 +4,8 @@ import jwt_decode from 'jwt-decode';
 import './App.css';
 import Row from './components/Row.jsx';
 import Header from './components/Header.jsx';
+import constants from './constansts';
+
 
 function Home() {
     const [email, setUsername] = useState(null);
@@ -32,16 +34,15 @@ function Home() {
 
     },[]);
 
-    // TODO: Localhost URL
     // Get user presets form the database
     const fetchPresets = async (e) => {
         const token = localStorage.getItem('token');
-        const url = 'http://localhost:8080/user/graphs';
+        const url = constants.BACKEND_URL + '/user/graphs';
         const options = {
           method: 'GET',
           headers: {
             authorization: token,
-          }
+          },
         }
 
         const response = await fetch(url, options)
@@ -61,13 +62,12 @@ function Home() {
         navigate("/Graph");
     }
 
-    // TODO: Localhost url
     // Make a delete request.
     async function deletePreset(){
         const id = localStorage.getItem("presetID");
         const index = {index: id};
 
-        const url = "http://localhost:8080/user/deletePreset"
+        const url = constants.BACKEND_URL + "/user/deletePreset";
         const options = {
             method: 'DELETE',
             headers: {

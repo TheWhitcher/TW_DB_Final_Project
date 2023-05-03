@@ -45,7 +45,6 @@ const GenerateGraph = (preset) => {
                     console.error(`stderr: ${data}`);
                     reject(new Error(`Failed to generate graph: ${data}`));
                 })
-                console.log('Python process exited with code: ', code);
             }
         })
     })
@@ -115,7 +114,6 @@ router.post('/generate', async function(req,res){
 // Save graph preset to the users document in the database.
 router.post('/save', async function(req,res){
     const data = req.body;
-    console.log('data: ', data);
     const authorization = req.headers.authorization;
     try{
 
@@ -127,9 +125,6 @@ router.post('/save', async function(req,res){
         });
     }
     catch (error){
-        console.log("Update Failed");
-        console.log('error: ', error);
-
         res.status(500).send({
             message: "Error updating Database",
             error: error,

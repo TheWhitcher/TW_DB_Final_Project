@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode';
 import './App.css'
 import { nanoid } from 'nanoid';
 import ListItem from './components/ListItem.jsx';
+import constants from './constansts';
 
 
 function Graph() {
@@ -40,6 +41,7 @@ function Graph() {
       {id: "BRT", checked: true, country: "United Kingdom"},
       {id: "USA", checked: true, country: "United States"},
     ]})
+    
   const navigate = useNavigate();
 
   // Load Preset and Generate graph.
@@ -75,6 +77,15 @@ function Graph() {
   function handleDropdown(){
     const dollarOption = document.getElementById("dollarOption");
     const countDropdown = document.getElementById("CountDropDown");
+    const checkbox = document.getElementById("relativeCheckbox");
+
+    if ((graphPreset.type === "CO2" && graphPreset.count === "Per Country")){
+      checkbox.disabled = false;
+    }
+    else{
+      checkbox.checked = false;
+      checkbox.disabled = true;
+    }
 
     if(graphPreset.type === "Methane" || graphPreset.type === "N2O"){
       dollarOption.style.display = "none";
@@ -89,11 +100,10 @@ function Graph() {
     }
   }
 
-  // TODO: Localhost URL
   // Set preset values
   async function loadPreset(){
     const token = localStorage.getItem('token');
-    const url = 'http://localhost:8080/user/graphs';
+    const url = constants.BACKEND_URL + '/user/graphs';
     const options = {
       method: 'GET',
       headers: {
@@ -145,20 +155,10 @@ function Graph() {
       }
     }
 
-    // Enable/Disable Relative to world checkbox
     if (key === "count"){
-        const checkbox = document.getElementById("relativeCheckbox");
-        graphPreset.count = newValue
-
-        if(newValue === "Per Country"){
-          checkbox.disabled = false;
-        }
-        else{
-          checkbox.checked = false;
-          graphPreset.world = false;
-          checkbox.disabled = true;
-        }
-      }
+      graphPreset.count = newValue
+      handleDropdown();
+    }
       
     if (key === "gasType"){
       graphPreset.type = newValue;
@@ -200,7 +200,6 @@ function Graph() {
     navigate("../Home");
   }
   
-  // TODO: Localhost URL
   // Make a request to run a python script that will generate a graph as an image.
   const generateGraph = async (e) =>{
     setImageLoaded(false);
@@ -218,8 +217,7 @@ function Graph() {
       countries: countries,
     }
     
-    console.log('preset: ', preset);
-    const url = 'http://localhost:8080/graph/generate';
+    const url = constants.BACKEND_URL + '/graph/generate';
     const options = {
       method: 'POST',
       body: JSON.stringify(preset),
@@ -237,10 +235,6 @@ function Graph() {
         const blob = new Blob([imgData], { type: 'image/png' });
         const url = URL.createObjectURL(blob);
         
-        console.log('imgData: ', imgData);
-        console.log('blob: ', blob);
-        console.log('url: ', url);
-        
         setGraph(url);
         
         setImageLoaded(true);
@@ -255,12 +249,11 @@ function Graph() {
     }
   }
 
-  // TODO: Localhost URL
   // Saves current graph settings to the database
   const saveGraph = async (e) => {
     const input = document.getElementById("modalInput");
     graphPreset.index = nanoid();
-    const url = 'http://localhost:8080/graph/save';
+    const url = constants.BACKEND_URL + '/graph/save';
     const options = {
       method: 'POST',
       headers: {
@@ -277,7 +270,6 @@ function Graph() {
         if (response.status === 200){
           input.value = "";
           document.getElementById("modalClose").click();
-          console.log("Success");
         }
         else{
           console.log("Save request Failed")
@@ -350,7 +342,7 @@ function Graph() {
                 <ul className="list-group list-group-flush text-start navbar-nav-scroll border" id="CountryList">
                   {graphPreset.countries.map((data, index) => { 
                     return <ListItem key={index} index={data.index} country={data.country} id={data.id} checked={data.checked} handleCountryList={handleCountryList}/>
-                  })};
+                  })}
                 </ul>
               </div>
 
