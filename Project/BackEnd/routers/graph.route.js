@@ -53,35 +53,35 @@ const GenerateGraph = (preset) => {
 // Converts preset info into plot types
 function PlotType(type, count, world){
     if(count === "Per Dollar"){
-        return "Carbon emission intensity of economies";
+        return "econ_intensity";
     }
     
     if(world){
-        return "CO2 Global Share";
+        return "co2_global_share";
     }
 
     if(type === "N2O"){
         if(count === "Per Country"){
-            return "Annual nitrous oxide emissions";
+            return "annual_nitrous_oxide_emissions";
         }
         else if(count === "Per Capita"){
-            return "Nitrous oxide per population";
+            return "nitrous_oxide_per_population";
         }
     }
     else if(type === "Methane"){
         if(count === "Per Country"){
-            return "Annual methane emissions";
+            return "annual_methane_emissions";
         }
         else if(count === "Per Capita"){
-            return "Methane per population";
+            return "methane_per_population";
         }
     }
     else if(type === "CO2"){
         if(count === "Per Country"){
-            return "Annual CO2 emissions";
+            return "annual_co2_emissions";
         }
         else if(count === "Per Capita"){
-            return "Per Capita CO2";
+            return "per_capita_co2";
         }
     }
 
