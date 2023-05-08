@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const { standardAuth } = require('../middlewares/auth.middleware');
 
 const database = client.db("emission_users");
 const usercollection = database.collection("users");
@@ -89,7 +90,7 @@ function PlotType(type, count, world){
 }
 
 // Generate a Graph
-router.post('/generate', async function(req,res){
+router.post('/generate', standardAuth, async function(req,res){
     const preset = req.body;
 
     try{
@@ -112,7 +113,7 @@ router.post('/generate', async function(req,res){
 })
 
 // Save graph preset to the users document in the database.
-router.post('/save', async function(req,res){
+router.post('/save', standardAuth, async function(req,res){
     const data = req.body;
     const authorization = req.headers.authorization;
     try{
