@@ -51,6 +51,10 @@ function Register() {
     const [form, setform] = useState({});
     const navigate = useNavigate(); 
 
+    function navLogin(){
+        navigate('/login');
+    }
+
     // Handles change of input in pages components.
     function handleInputChange(key, newValue){
         form[key] = newValue;
@@ -117,15 +121,17 @@ function Register() {
     
 
     const response = await fetch(loginUrl, options)  
+    const jsonResponse = await response.json();
+
     
     if(response.status == 201){        
         toast.success("Register successful", toastOptions);
         setTimeout(() => {navigate('/login')}, 2000)
     }
     else{
-        toast.error("Register failed", toastOptions);
+        toast.error(jsonResponse.message, toastOptions);
+        response.body
     }
-
 
 }
 
@@ -168,7 +174,7 @@ function Register() {
                 </div>
                 
                 <button className='btn btn-success mb-2' type="submit">Create</button>
-                <div>Login? <a href='/Login'>Click here</a></div>
+                <div>Login? <a className="text-primary" onClick={navLogin}>Click here</a></div>
             </div>
         </form>
         <ToastContainer/>

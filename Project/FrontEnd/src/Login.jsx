@@ -13,6 +13,10 @@ function Login() {
     const passAlert = () =>{
         alert("Feature not yet available")
     }
+
+    function navRegister(){
+        navigate('/register');
+    }
     
     // Handle input change in page components.
     function handleInputChange(key, newValue){
@@ -76,7 +80,7 @@ function Login() {
             </div>
         </form>
 
-        <div>New Register? <a href="./Register">Click Here</a></div>
+        <div>New Register? <a className="text-primary" onClick={navRegister}>Click Here</a></div>
         <div>Forgot Password? <a onClick={passAlert}>Click Here</a></div>
         <ToastContainer/>
     </div>
